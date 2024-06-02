@@ -4,7 +4,7 @@
   <p align="center">
     ✨ <a href="https://zod.dev">https://zod.dev</a> ✨
     <br/>
-    TypeScript-first schema validation with static type inference
+    静的型推論による TypeScript ファーストのスキーマ検証
   </p>
 </p>
 <br/>
@@ -37,15 +37,11 @@
 <br/>
 <br/>
 
-> Zod 3.23 is out! View the [release notes](https://github.com/colinhacks/zod/releases/tag/v3.23.0).
+## 目次
 
-> These docs have been translated into [Chinese](./README_ZH.md).
+<!-- 完全なドキュメントは、[公式ドキュメントサイト](https://zod.js.org/) (推奨) と `README.md` の両方で入手できます。
 
-## Table of contents
-
-<!-- The full documentation is available both on the [official documentation site](https://zod.js.org/) (recommended) and in `README.md`.
-
-#### Go to [zod.js.org](https://zod.js.org) >> -->
+#### [zod.js.org](https://zod.js.org) にアクセス >> -->
 
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
@@ -165,7 +161,7 @@
   - [Ow](#ow)
 - [Changelog](#changelog)
 
-## Introduction
+## はじめに
 
 Zod is a TypeScript-first schema declaration and validation library. I'm using the term "schema" to broadly refer to any data type, from a simple `string` to a complex nested object.
 
@@ -185,10 +181,10 @@ Some other great aspects:
 
 Sponsorship at any level is appreciated and encouraged. For individual developers, consider the [Cup of Coffee tier](https://github.com/sponsors/colinhacks). If you built a paid product using Zod, consider one of the [podium tiers](https://github.com/sponsors/colinhacks).
 
-<h3 align="center">Platinum</h3>
+<h3 align="center">プラチナ</h3>
 
 <blockquote align="center" width="400px">
-  <a href="mailto:colin@colinhacks.com" target="_blank">Email me</a> to discuss becoming a Platinum sponsor of Zod.
+  Zod のプラチナスポンサーになる方法については、<a href="mailto:colin@colinhacks.com" target="_blank">メール</a> にてご連絡ください。
 </blockquote>
 
 <!-- <table>
@@ -205,7 +201,7 @@ Sponsorship at any level is appreciated and encouraged. For individual developer
   </tr>
 </table> -->
 
-<h3 align="center">Gold</h3>
+<h3 align="center">ゴールド</h3>
 
 <table align="center">
   <tr>
@@ -291,7 +287,7 @@ Sponsorship at any level is appreciated and encouraged. For individual developer
   </tr>
 </table>
 
-<h3 align="center">Silver</h3>
+<h3 align="center">シルバー</h3>
 
 <table align="center">
   <tr>
@@ -335,7 +331,7 @@ Sponsorship at any level is appreciated and encouraged. For individual developer
   </tr>
 </table>
 
-<h3 align="center">Bronze</h3>
+<h3 align="center">ブロンズ</h3>
 
 <table align="center">
   <tr>
@@ -364,26 +360,27 @@ Sponsorship at any level is appreciated and encouraged. For individual developer
   </tr>
 </table>
 
-### Ecosystem
+### エコシステム
 
 There are a growing number of tools that are built atop or support Zod natively! If you've built a tool or library on top of Zod, tell me about it [on Twitter](https://twitter.com/colinhacks) or [start a Discussion](https://github.com/colinhacks/zod/discussions). I'll add it below and tweet it out.
+Zod で構築されているツールや、Zod をネイティブにサポートするツールの数は増えています。もし、Zod をベースにツールやライブラリを構築したことがある場合は、[Twitter](https://twitter.com/colinhacks) で教えてください。または、[ディスカッションを開始](https://github.com/colinhacks/zod/discussions) してくださいね。以下の一覧に追加したり、ツイートしたりしますね。
 
-#### Resources
+#### リソース
 
 - [Total TypeScript Zod Tutorial](https://www.totaltypescript.com/tutorials/zod) by [@mattpocockuk](https://twitter.com/mattpocockuk)
 - [Fixing TypeScript's Blindspot: Runtime Typechecking](https://www.youtube.com/watch?v=rY_XqfSHock) by [@jherr](https://twitter.com/jherr)
 
-#### API libraries
+#### API ライブラリ
 
 - [`tRPC`](https://github.com/trpc/trpc): Build end-to-end typesafe APIs without GraphQL.
 - [`@anatine/zod-nestjs`](https://github.com/anatine/zod-plugins/tree/main/packages/zod-nestjs): Helper methods for using Zod in a NestJS project.
 - [`zod-endpoints`](https://github.com/flock-community/zod-endpoints): Contract-first strictly typed endpoints with Zod. OpenAPI compatible.
 - [`zhttp`](https://github.com/evertdespiegeleer/zhttp): An OpenAPI compatible, strictly typed http library with Zod input and response validation.
 - [`domain-functions`](https://github.com/SeasonedSoftware/domain-functions/): Decouple your business logic from your framework using composable functions. With first-class type inference from end to end powered by Zod schemas.
-- [`@zodios/core`](https://github.com/ecyrbe/zodios): A typescript API client with runtime and compile time validation backed by axios and zod.
-- [`express-zod-api`](https://github.com/RobinTail/express-zod-api): Build Express-based APIs with I/O schema validation and custom middlewares.
-- [`tapiduck`](https://github.com/sumukhbarve/monoduck/blob/main/src/tapiduck/README.md): End-to-end typesafe JSON APIs with Zod and Express; a bit like tRPC, but simpler.
-- [`koa-zod-router`](https://github.com/JakeFenley/koa-zod-router): Create typesafe routes in Koa with I/O validation using Zod.
+- [`@zodios/core`](https://github.com/ecyrbe/zodios): axios と zod に支えられた実行時およびコンパイル時の検証を行う typescript API クライアント
+- [`express-zod-api`](https://github.com/RobinTail/express-zod-api):  I/O スキーマ検証やカスタムミドルウェアを備えた Express ベースの API を構築
+- [`tapiduck`](https://github.com/sumukhbarve/monoduck/blob/main/src/tapiduck/README.md): Zod と Express を使ったエンドツーエンドのタイプセーフ JSON API。少し tRPC に似ていますが、よりシンプルです
+- [`koa-zod-router`](https://github.com/JakeFenley/koa-zod-router): Zod を使った I/O バリデーションで Koa にタイプセーフなルートを作成
 
 #### Form integrations
 
@@ -460,12 +457,12 @@ There are a growing number of tools that are built atop or support Zod natively!
 - [`zod-dev`](https://github.com/schalkventer/zod-dev): Conditionally disables Zod runtime parsing in production.
 - [`zod-accelerator`](https://github.com/duplojs/duplojs-zod-accelerator): Accelerates Zod's throughput up to ~100x.
 
-## Installation
+## インストール
 
-### Requirements
+### 動作要件
 
-- TypeScript 4.5+!
-- You must enable `strict` mode in your `tsconfig.json`. This is a best practice for all TypeScript projects.
+- TypeScript 4.5 以上
+- `tsconfig.json` で `strict` モードを有効にする必要があります。これはすべての TypeScript プロジェクトのベストプラクティスです。
 
   ```ts
   // tsconfig.json
@@ -478,7 +475,7 @@ There are a growing number of tools that are built atop or support Zod natively!
   }
   ```
 
-### From `npm` (Node/Bun)
+### `npm` (Node/Bun) からインストール
 
 ```sh
 npm install zod       # npm
@@ -487,7 +484,7 @@ bun add zod           # bun
 pnpm add zod          # pnpm
 ```
 
-Zod also publishes a canary version on every commit. To install the canary:
+Zod はコミットごとにカナリアバージョンも公開しています。インストールするには以下をご覧ください。
 
 ```sh
 npm install zod@canary       # npm
@@ -496,25 +493,25 @@ bun add zod@canary           # bun
 pnpm add zod@canary          # pnpm
 ```
 
-### From `deno.land/x` (Deno)
+### `deno.land/x` (Deno) よりインストール
 
-Unlike Node, Deno relies on direct URL imports instead of a package manager like NPM. Zod is available on [deno.land/x](https://deno.land/x). The latest version can be imported like so:
+Node とは異なり、Deno は NPM などのパッケージマネージャではなく、URLからの直接インポートを採用しています。Zod は [deno.land/x](https://deno.land/x) で入手できます。最新バージョンは次のようにインポートできます。
 
 ```ts
 import { z } from "https://deno.land/x/zod/mod.ts";
 ```
 
-You can also specify a particular version:
+特定のバージョンを指定することもできます。
 
 ```ts
 import { z } from "https://deno.land/x/zod@v3.16.1/mod.ts";
 ```
 
-> The rest of this README assumes you are using npm and importing directly from the `"zod"` package.
+> この README の残りの部分では、npm を使用して `"zod"` パッケージから直接インポートすることを前提としています。
 
-## Basic usage
+## 基本的な使い方
 
-Creating a simple string schema
+シンプルな文字列スキーマの作成
 
 ```ts
 import { z } from "zod";

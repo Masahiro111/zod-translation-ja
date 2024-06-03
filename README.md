@@ -18,7 +18,7 @@
 </p>
 
 <div align="center">
-  <a href="https://zod.dev">Documentation</a>
+  <a href="https://zod.dev">ドキュメント</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://discord.gg/RcG33DQJdf">Discord</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -43,13 +43,13 @@
 
 #### [zod.js.org](https://zod.js.org) にアクセス >> -->
 
-- [Table of contents](#table-of-contents)
-- [Introduction](#introduction)
-  - [Sponsors](#sponsors)
-    - [Gold](#gold)
-    - [Silver](#silver)
-    - [Bronze](#bronze)
-    - [Copper](#copper)
+- [目次](#table-of-contents)
+- [はじめに](#introduction)
+  - [スポンサー](#sponsors)
+    - [ゴールド](#gold)
+    - [シルバー](#silver)
+    - [ブロンズ](#bronze)
+    - [カッパー](#copper)
   - [Ecosystem](#ecosystem)
     - [Resources](#resources)
     - [API libraries](#api-libraries)
@@ -362,8 +362,7 @@ Sponsorship at any level is appreciated and encouraged. For individual developer
 
 ### エコシステム
 
-There are a growing number of tools that are built atop or support Zod natively! If you've built a tool or library on top of Zod, tell me about it [on Twitter](https://twitter.com/colinhacks) or [start a Discussion](https://github.com/colinhacks/zod/discussions). I'll add it below and tweet it out.
-Zod で構築されているツールや、Zod をネイティブにサポートするツールの数は増えています。もし、Zod をベースにツールやライブラリを構築したことがある場合は、[Twitter](https://twitter.com/colinhacks) で教えてください。または、[ディスカッションを開始](https://github.com/colinhacks/zod/discussions) してくださいね。以下の一覧に追加したり、ツイートしたりしますね。
+Zod で構築されているツールや、Zod をネイティブにサポートするツールの数は増えています。もし、Zod をベースにツールやライブラリを構築したことがある場合は、[Twitter](https://twitter.com/colinhacks) で教えてください。または、[ディスカッションを開始](https://github.com/colinhacks/zod/discussions) してくださいね。以下の一覧に追加したり、ツイートもしたいと思います。
 
 #### リソース
 
@@ -507,7 +506,7 @@ import { z } from "https://deno.land/x/zod/mod.ts";
 import { z } from "https://deno.land/x/zod@v3.16.1/mod.ts";
 ```
 
-> この README の残りの部分では、npm を使用して `"zod"` パッケージから直接インポートすることを前提としています。
+> この README の残りの部分では、npm を使用して `"zod"` パッケージからインポートするのを前提としています。
 
 ## 基本的な使い方
 
@@ -528,7 +527,7 @@ mySchema.safeParse("tuna"); // => { success: true; data: "tuna" }
 mySchema.safeParse(12); // => { success: false; error: ZodError }
 ```
 
-Creating an object schema
+オブジェクトスキーマの作成
 
 ```ts
 import { z } from "zod";
@@ -544,12 +543,12 @@ type User = z.infer<typeof User>;
 // { username: string }
 ```
 
-## Primitives
+## プリミティブ
 
 ```ts
 import { z } from "zod";
 
-// primitive values
+// プリミティブ値
 z.string();
 z.number();
 z.bigint();
@@ -557,24 +556,24 @@ z.boolean();
 z.date();
 z.symbol();
 
-// empty types
+// 空の型
 z.undefined();
 z.null();
-z.void(); // accepts undefined
+z.void(); // 未定義を許容
 
-// catch-all types
-// allows any value
+// キャッチオールな型
+// 任意の値を許容
 z.any();
 z.unknown();
 
-// never type
-// allows no values
+// 型を指定しない
+// 値なしを許可
 z.never();
 ```
 
-## Coercion for primitives
+## プリミティブの強制
 
-Zod now provides a more convenient way to coerce primitive values.
+Zod は、プリミティブ値を強制する便利な方法を提供するようになりました。
 
 ```ts
 const schema = z.coerce.string();
@@ -582,7 +581,7 @@ schema.parse("tuna"); // => "tuna"
 schema.parse(12); // => "12"
 ```
 
-During the parsing step, the input is passed through the `String()` function, which is a JavaScript built-in for coercing data into strings.
+解析ステップでは、入力は `String()` 関数に渡されます。この関数は、データを文字列に強制変換するための JavaScript 組み込み関数です。
 
 ```ts
 schema.parse(12); // => "12"
@@ -591,15 +590,15 @@ schema.parse(undefined); // => "undefined"
 schema.parse(null); // => "null"
 ```
 
-The returned schema is a normal `ZodString` instance so you can use all string methods.
+返されるスキーマは通常の `ZodString` インスタンスなので、すべての文字列メソッドを使用できます。
 
 ```ts
 z.coerce.string().email().min(5);
 ```
 
-**How coercion works**
+**強制の仕組み**
 
-All primitive types support coercion. Zod coerces all inputs using the built-in constructors: `String(input)`, `Number(input)`, `new Date(input)`, etc.
+すべてのプリミティブ型は強制変換をサポートしています。Zod は、組み込みコンストラクタの `String(input)`、`Number(input)`、`new Date(input)` などを使用して、すべての入力を強制変換します。
 
 ```ts
 z.coerce.string(); // String(input)
@@ -609,7 +608,7 @@ z.coerce.bigint(); // BigInt(input)
 z.coerce.date(); // new Date(input)
 ```
 
-**Note** — Boolean coercion with `z.coerce.boolean()` may not work how you expect. Any [truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy) value is coerced to `true`, and any [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) value is coerced to `false`.
+**注意** — `z.coerce.boolean()` を使用したブール値の強制変換は、期待どおりに動作しない可能性があります。[truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy) 値はすべて `true` に強制変換され、[falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) 値はすべて `false` に強制変換されます。
 
 ```ts
 const schema = z.coerce.boolean(); // Boolean(input)
@@ -626,9 +625,9 @@ schema.parse(undefined); // => false
 schema.parse(null); // => false
 ```
 
-For more control over coercion logic, consider using [`z.preprocess`](#preprocess) or [`z.pipe()`](#pipe).
+強制ロジックをさらに制御するには、[`z.preprocess`](#preprocess) または [`z.pipe()`](#pipe) の使用を検討してください。
 
-## Literals
+## リテラル
 
 Literal schemas represent a [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types), like `"hello world"` or `5`.
 
@@ -645,7 +644,7 @@ const terrific = z.literal(terrificSymbol);
 tuna.value; // "tuna"
 ```
 
-> Currently there is no support for Date literals in Zod. If you have a use case for this feature, please file an issue.
+> 現在、Zod では日付リテラルをサポートしていません。この機能の使用例がある場合は、Issue を作成してください。
 
 ## Strings
 

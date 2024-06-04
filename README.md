@@ -629,7 +629,7 @@ schema.parse(null); // => false
 
 ## リテラル
 
-Literal schemas represent a [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types), like `"hello world"` or `5`.
+リテラルスキーマは `"hello world"` や `5` のような [リテラル型](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types) を表します。
 
 ```ts
 const tuna = z.literal("tuna");
@@ -646,12 +646,12 @@ tuna.value; // "tuna"
 
 > 現在、Zod では日付リテラルをサポートしていません。この機能の使用例がある場合は、Issue を作成してください。
 
-## Strings
+## 文字列
 
-Zod includes a handful of string-specific validations.
+Zod には、文字列に関するバリデーションが多数用意されています。
 
 ```ts
-// validations
+// バリデーション
 z.string().max(5);
 z.string().min(5);
 z.string().length(5);
@@ -667,24 +667,24 @@ z.string().regex(regex);
 z.string().includes(string);
 z.string().startsWith(string);
 z.string().endsWith(string);
-z.string().datetime(); // ISO 8601; by default only `Z` timezone allowed
-z.string().ip(); // defaults to allow both IPv4 and IPv6
+z.string().datetime(); // ISO 8601; デフォルトでは `Z` タイムゾーンのみが許可
+z.string().ip(); // デフォルトでは IPv4 と IPv6 の両方を許可
 
-// transforms
-z.string().trim(); // trim whitespace
-z.string().toLowerCase(); // toLowerCase
-z.string().toUpperCase(); // toUpperCase
+// 変換
+z.string().trim(); //  空白文字を除去
+z.string().toLowerCase(); // 小文字にする
+z.string().toUpperCase(); // 大文字にする
 
-// added in Zod 3.23
-z.string().date(); // ISO date format (YYYY-MM-DD)
-z.string().time(); // ISO time format (HH:mm:ss[.SSSSSS])
+// Zod 3.23で追加
+z.string().date(); // ISO 日付フォーマット (YYYY-MM-DD)
+z.string().time(); // ISO 時間フォーマット (HH:mm:ss[.SSSSSS])
 z.string().duration(); // ISO 8601 duration
 z.string().base64();
 ```
 
-> Check out [validator.js](https://github.com/validatorjs/validator.js) for a bunch of other useful string validation functions that can be used in conjunction with [Refinements](#refine).
+> [Refinements](#refine) と組み合わせて使用できる便利な文字列バリデーション関数については、[validator.js](https://github.com/validatorjs/validator.js) を参照してください。
 
-You can customize some common error messages when creating a string schema.
+文字列スキーマを作成する際によく使用されるエラーメッセージをカスタマイズすることができます。
 
 ```ts
 const name = z.string({
@@ -693,7 +693,7 @@ const name = z.string({
 });
 ```
 
-When using validation methods, you can pass in an additional argument to provide a custom error message.
+バリデーションメソッドを使用する際には、追加の引数を渡すことで、独自のエラーメッセージを指定することができます。
 
 ```ts
 z.string().min(5, { message: "Must be 5 or more characters long" });
@@ -712,11 +712,11 @@ z.string().time({ message: "Invalid time string!" });
 z.string().ip({ message: "Invalid IP address" });
 ```
 
-### Datetimes
+### 日付と時刻
 
-As you may have noticed, Zod string includes a few date/time related validations. These validations are regular expression based, so they are not as strict as a full date/time library. However, they are very convenient for validating user input.
+お気づきかもしれませんが、Zod 文字列には日付 / 時刻に関連するバリデーションがいくつか含まれています。これらのバリデーションは正規表現ベースなので、完全な日付 / 時刻ライブラリほど厳密ではありません。しかし、ユーザーの入力を検証するのに非常に便利です。
 
-The `z.string().datetime()` method enforces ISO 8601; default is no timezone offsets and arbitrary sub-second decimal precision.
+`z.string().datetime()` メソッドは ISO 8601 が適用されます。デフォルトは、タイムゾーンオフセットはなく、任意の秒未満の小数精度となります。
 
 ```ts
 const datetime = z.string().datetime();
@@ -727,7 +727,7 @@ datetime.parse("2020-01-01T00:00:00.123456Z"); // pass (arbitrary precision)
 datetime.parse("2020-01-01T00:00:00+02:00"); // fail (no offsets allowed)
 ```
 
-Timezone offsets can be allowed by setting the `offset` option to `true`.
+`offset` オプションを `true` に設定することで、タイムゾーンオフセットを許可できます。
 
 ```ts
 const datetime = z.string().datetime({ offset: true });
@@ -739,7 +739,7 @@ datetime.parse("2020-01-01T00:00:00.123+02"); // pass (only offset hours)
 datetime.parse("2020-01-01T00:00:00Z"); // pass (Z still supported)
 ```
 
-You can additionally constrain the allowable `precision`. By default, arbitrary sub-second precision is supported (but optional).
+さらに、許容される `precision` （精度）を設定することもできます。デフォルトでは、任意の秒未満の精度がサポートされています（ただしオプション）。
 
 ```ts
 const datetime = z.string().datetime({ precision: 3 });
@@ -749,11 +749,11 @@ datetime.parse("2020-01-01T00:00:00Z"); // fail
 datetime.parse("2020-01-01T00:00:00.123456Z"); // fail
 ```
 
-### Dates
+### 日付
 
-> Added in Zod 3.23
+> Zod 3.23 で追加
 
-The `z.string().date()` method validates strings in the format `YYYY-MM-DD`.
+`z.string().date()` メソッドは、`YYYY-MM-DD` 形式の文字列をバリデーションします。
 
 ```ts
 const date = z.string().date();
@@ -763,11 +763,11 @@ date.parse("2020-1-1"); // fail
 date.parse("2020-01-32"); // fail
 ```
 
-### Times
+### 時刻
 
-> Added in Zod 3.23
+> Zod 3.23 で追加
 
-The `z.string().time()` method validates strings in the format `HH:MM:SS[.s+]`. The second can include arbitrary decimal precision. It does not allow timezone offsets of any kind.
+`z.string().time()` メソッドは、`HH:MM:SS[.s+]` 形式の文字列をバリデーションします。秒には任意の小数精度を含めることもできます。このメソッドは、いかなるタイムゾーンオフセットも許可されません。
 
 ```ts
 const time = z.string().time();
@@ -780,7 +780,7 @@ time.parse("00:00:00.123Z"); // fail (no `Z` allowed)
 time.parse("00:00:00.123+02:00"); // fail (no offsets allowed)
 ```
 
-You can set the `precision` option to constrain the allowable decimal precision.
+`precision` オプションを設定すると、許容される小数の精度を制御できます。
 
 ```ts
 const time = z.string().time({ precision: 3 });
@@ -790,9 +790,9 @@ time.parse("00:00:00.123456"); // fail
 time.parse("00:00:00"); // fail
 ```
 
-### IP addresses
+### IP アドレス
 
-The `z.string().ip()` method by default validate IPv4 and IPv6.
+`z.string().ip()` メソッドは、デフォルトで IPv4 と IPv6 をバリデーションします。
 
 ```ts
 const ip = z.string().ip();
@@ -805,7 +805,7 @@ ip.parse("256.1.1.1"); // fail
 ip.parse("84d5:51a0:9114:gggg:4cfa:f2d7:1f12:7003"); // fail
 ```
 
-You can additionally set the IP `version`.
+さらに IP の `バージョン` を設定することもできます。
 
 ```ts
 const ipv4 = z.string().ip({ version: "v4" });
@@ -815,9 +815,9 @@ const ipv6 = z.string().ip({ version: "v6" });
 ipv6.parse("192.168.1.1"); // fail
 ```
 
-## Numbers
+## 数値
 
-You can customize certain error messages when creating a number schema.
+数値スキーマを作成する際に、特定のエラーメッセージをカスタマイズすることができます。
 
 ```ts
 const age = z.number({
@@ -826,7 +826,7 @@ const age = z.number({
 });
 ```
 
-Zod includes a handful of number-specific validations.
+Zod は数値に特化したバリデーションをいくつか用意しています。
 
 ```ts
 z.number().gt(5);
@@ -847,7 +847,7 @@ z.number().finite(); // value must be finite, not Infinity or -Infinity
 z.number().safe(); // value must be between Number.MIN_SAFE_INTEGER and Number.MAX_SAFE_INTEGER
 ```
 
-Optionally, you can pass in a second argument to provide a custom error message.
+オプションで、カスタムエラーメッセージを提供するために第2引数を渡すことができます
 
 ```ts
 z.number().lte(5, { message: "this👏is👏too👏big" });
@@ -855,7 +855,7 @@ z.number().lte(5, { message: "this👏is👏too👏big" });
 
 ## BigInts
 
-Zod includes a handful of bigint-specific validations.
+Zod には、bigint 専用のバリデーションがいくつか含まれています。
 
 ```ts
 z.bigint().gt(5n);
@@ -873,7 +873,7 @@ z.bigint().multipleOf(5n); // Evenly divisible by 5n.
 
 ## NaNs
 
-You can customize certain error messages when creating a nan schema.
+nan スキーマを作成する際に、特定のエラーメッセージをカスタマイズすることができます。
 
 ```ts
 const isNaN = z.nan({
@@ -882,9 +882,9 @@ const isNaN = z.nan({
 });
 ```
 
-## Booleans
+## ブール値
 
-You can customize certain error messages when creating a boolean schema.
+ブール型のスキーマを作成する際に、特定のエラーメッセージをカスタマイズすることができます。
 
 ```ts
 const isActive = z.boolean({
@@ -893,16 +893,16 @@ const isActive = z.boolean({
 });
 ```
 
-## Dates
+## 日付
 
-Use z.date() to validate `Date` instances.
+z.date() を使用して、`Date` インスタンスをバリデーションします。 
 
 ```ts
 z.date().safeParse(new Date()); // success: true
 z.date().safeParse("2022-01-12T00:00:00.000Z"); // success: false
 ```
 
-You can customize certain error messages when creating a date schema.
+日付スキーマを作成する際に、特定のエラーメッセージをカスタマイズすることができます。
 
 ```ts
 const myDateSchema = z.date({
@@ -911,16 +911,16 @@ const myDateSchema = z.date({
 });
 ```
 
-Zod provides a handful of date-specific validations.
+Zod は、日付に特化したバリデーションを提供しています。
 
 ```ts
 z.date().min(new Date("1900-01-01"), { message: "Too old" });
 z.date().max(new Date(), { message: "Too young!" });
 ```
 
-**Coercion to Date**
+**日付の強制**
 
-Since [zod 3.20](https://github.com/colinhacks/zod/releases/tag/v3.20), use [`z.coerce.date()`](#coercion-for-primitives) to pass the input through `new Date(input)`.
+[zod 3.20](https://github.com/colinhacks/zod/releases/tag/v3.20) 以降では、[`z.coerce.date()`](#coercion-for-primitives) を使用して、`new Date(input)`を通して入力を渡します。
 
 ```ts
 const dateSchema = z.coerce.date();
@@ -938,9 +938,9 @@ console.log(dateSchema.safeParse("2023-13-10").success); // false
 console.log(dateSchema.safeParse("0000-00-00").success); // false
 ```
 
-For older zod versions, use [`z.preprocess`](#preprocess) like [described in this thread](https://github.com/colinhacks/zod/discussions/879#discussioncomment-2036276).
+古いバージョンの Zod の場合は [このスレッドで説明されている](https://github.com/colinhacks/zod/discussions/879#discussioncomment-2036276) のように、[`z.preprocess`](#preprocess)を使用してください。
 
-## Zod enums
+## Zod 列挙型
 
 ```ts
 const FishEnum = z.enum(["Salmon", "Tuna", "Trout"]);
@@ -948,14 +948,14 @@ type FishEnum = z.infer<typeof FishEnum>;
 // 'Salmon' | 'Tuna' | 'Trout'
 ```
 
-`z.enum` is a Zod-native way to declare a schema with a fixed set of allowable _string_ values. Pass the array of values directly into `z.enum()`. Alternatively, use `as const` to define your enum values as a tuple of strings. See the [const assertion docs](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) for details.
+`z.enum` は、Zod ネイティブな方法で、許容される _string_ 値の固定セットを持つスキーマを宣言します。値の配列を `z.enum()` に直接渡します。また、`as const` を使用して、enum の値を文字列のタプルとして定義することもできます。詳細は [const アサーションドキュメント](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) を参照してください。
 
 ```ts
 const VALUES = ["Salmon", "Tuna", "Trout"] as const;
 const FishEnum = z.enum(VALUES);
 ```
 
-This is not allowed, since Zod isn't able to infer the exact values of each element.
+Zod は各要素の正確な値を推測できないため、以下は許可されません。
 
 ```ts
 const fish = ["Salmon", "Tuna", "Trout"];
@@ -964,7 +964,7 @@ const FishEnum = z.enum(fish);
 
 **`.enum`**
 
-To get autocompletion with a Zod enum, use the `.enum` property of your schema:
+Zod 列挙型で自動補完を行うには、スキーマの `.enum` プロパティを使用します。
 
 ```ts
 FishEnum.enum.Salmon; // => autocompletes
@@ -979,7 +979,7 @@ FishEnum.enum;
 */
 ```
 
-You can also retrieve the list of options as a tuple with the `.options` property:
+`.options` プロパティを使用して、オプションのリストをタプルとして取得することもできます。
 
 ```ts
 FishEnum.options; // ["Salmon", "Tuna", "Trout"];
@@ -2885,6 +2885,6 @@ Ow is focused on function input validation. It's a library that makes it easy to
 
 If you want to validate function inputs, use function schemas in Zod! It's a much simpler approach that lets you reuse a function type declaration without repeating yourself (namely, copy-pasting a bunch of ow assertions at the beginning of every function). Also Zod lets you validate your return types as well, so you can be sure there won't be any unexpected data passed downstream.
 
-## Changelog
+## 更新履歴
 
-View the changelog at [CHANGELOG.md](CHANGELOG.md)
+更新履歴は [CHANGELOG.md](CHANGELOG.md) をご覧ください。

@@ -1093,7 +1093,7 @@ optionalString.unwrap() === stringSchema; // true
 
 ## Nullables
 
-Similarly, you can create nullable types with `z.nullable()`.
+同様に、`z.nullable()` を使用して NULL 可能な型を作成できます。
 
 ```ts
 const nullableString = z.nullable(z.string());
@@ -1101,14 +1101,14 @@ nullableString.parse("asdf"); // => "asdf"
 nullableString.parse(null); // => null
 ```
 
-Or use the `.nullable()` method.
+または、`.nullable()` メソッドを使用します。
 
 ```ts
 const E = z.string().nullable(); // equivalent to nullableString
 type E = z.infer<typeof E>; // string | null
 ```
 
-Extract the inner schema with `.unwrap()`.
+`.unwrap()` を使用して内部スキーマを抽出します。
 
 ```ts
 const stringSchema = z.string();
@@ -1116,7 +1116,7 @@ const nullableString = stringSchema.nullable();
 nullableString.unwrap() === stringSchema; // true
 ```
 
-## Objects
+## オブジェクト
 
 ```ts
 // all properties are required by default
@@ -1137,7 +1137,7 @@ type Dog = {
 
 ### `.shape`
 
-Use `.shape` to access the schemas for a particular key.
+特定のキーのスキーマにアクセスするには、`.shape` を使用します。
 
 ```ts
 Dog.shape.name; // => string schema
@@ -1146,7 +1146,7 @@ Dog.shape.age; // => number schema
 
 ### `.keyof`
 
-Use `.keyof` to create a `ZodEnum` schema from the keys of an object schema.
+`.keyof` を使用して、オブジェクトスキーマのキーから `ZodEnum` スキーマを作成します。
 
 ```ts
 const keySchema = Dog.keyof();
@@ -1155,7 +1155,7 @@ keySchema; // ZodEnum<["name", "age"]>
 
 ### `.extend`
 
-You can add additional fields to an object schema with the `.extend` method.
+`.extend` メソッドを使用して、オブジェクトスキーマにフィールドを追加します。
 
 ```ts
 const DogWithBreed = Dog.extend({
@@ -1163,11 +1163,11 @@ const DogWithBreed = Dog.extend({
 });
 ```
 
-You can use `.extend` to overwrite fields! Be careful with this power!
+`.extend` を使用するとフィールドを上書きすることができます。この機能には注意してください。
 
 ### `.merge`
 
-Equivalent to `A.extend(B.shape)`.
+`A.extend(B.shape)` と同等です。
 
 ```ts
 const BaseTeacher = z.object({ students: z.array(z.string()) });
@@ -1177,11 +1177,11 @@ const Teacher = BaseTeacher.merge(HasID);
 type Teacher = z.infer<typeof Teacher>; // => { students: string[], id: string }
 ```
 
-> If the two schemas share keys, the properties of B overrides the property of A. The returned schema also inherits the "unknownKeys" policy (strip/strict/passthrough) and the catchall schema of B.
+> 2 つのスキーマがキーを共有する場合、B のプロパティは A のプロパティを上書きします。返されるスキーマは、B の「unknownKeys」ポリシー (strip/strict/passthrough) とキャッチオールスキーマも継承します。
 
 ### `.pick/.omit`
 
-Inspired by TypeScript's built-in `Pick` and `Omit` utility types, all Zod object schemas have `.pick` and `.omit` methods that return a modified version. Consider this Recipe schema:
+TypeScript 組み込みの `Pick` と `Omit` ユーティリティ型に触発され、すべての Zod オブジェクトスキーマは、変更されたバージョンを返す `.pick` メソッドと `.omit` メソッドがあります。次の Recipe スキーマについて見てみましょう。
 
 ```ts
 const Recipe = z.object({
@@ -1191,7 +1191,7 @@ const Recipe = z.object({
 });
 ```
 
-To only keep certain keys, use `.pick` .
+特定のキーのみを保持するには、 `.pick` を使用します。
 
 ```ts
 const JustTheName = Recipe.pick({ name: true });
@@ -1199,7 +1199,7 @@ type JustTheName = z.infer<typeof JustTheName>;
 // => { name: string }
 ```
 
-To remove certain keys, use `.omit` .
+特定のキーを削除するには、`.omit` を使用します。
 
 ```ts
 const NoIDRecipe = Recipe.omit({ id: true });
@@ -1210,9 +1210,9 @@ type NoIDRecipe = z.infer<typeof NoIDRecipe>;
 
 ### `.partial`
 
-Inspired by the built-in TypeScript utility type [Partial](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype), the `.partial` method makes all properties optional.
+TypeScript 組み込みのユーティリティ型 [Partial](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype) にヒントを得た `.partial` メソッドは、すべてのプロパティを **任意** とさせます。
 
-Starting from this object:
+次のオブジェクトから始めてみましょう。
 
 ```ts
 const user = z.object({
@@ -1222,14 +1222,14 @@ const user = z.object({
 // { email: string; username: string }
 ```
 
-We can create a partial version:
+パーシャルなバージョンを作成してみましょう。
 
 ```ts
 const partialUser = user.partial();
 // { email?: string | undefined; username?: string | undefined }
 ```
 
-You can also specify which properties to make optional:
+任意にするプロパティを指定することもできます。
 
 ```ts
 const optionalEmail = user.partial({
@@ -1245,7 +1245,7 @@ const optionalEmail = user.partial({
 
 ### `.deepPartial`
 
-The `.partial` method is shallow — it only applies one level deep. There is also a "deep" version:
+`.partial` メソッドは1階層分しか適用されない浅いメソッドです。深い階層に適応される `.deepPartial` バージョンもあります。
 
 ```ts
 const user = z.object({

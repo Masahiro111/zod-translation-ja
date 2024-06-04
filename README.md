@@ -985,9 +985,9 @@ FishEnum.enum;
 FishEnum.options; // ["Salmon", "Tuna", "Trout"];
 ```
 
-**`.exclude/.extract()`**
+**`.exclude() と .extract()` メソッド**
 
-You can create subsets of a Zod enum with the `.exclude` and `.extract` methods.
+`.exclude` メソッドと `.extract` メソッドを使用して Zod 列挙型のサブセットを作成できます。
 
 ```ts
 const FishEnum = z.enum(["Salmon", "Tuna", "Trout"]);
@@ -995,11 +995,11 @@ const SalmonAndTrout = FishEnum.extract(["Salmon", "Trout"]);
 const TunaOnly = FishEnum.exclude(["Salmon", "Trout"]);
 ```
 
-## Native enums
+## ネイティブ列挙型
 
-Zod enums are the recommended approach to defining and validating enums. But if you need to validate against an enum from a third-party library (or you don't want to rewrite your existing enums) you can use `z.nativeEnum()`.
+Zod 列挙型は、列挙型を定義し検証するための推奨されるアプローチです。しかし、サードパーティライブラリの列挙型を検証する必要がある場合（あるいは既存の列挙型を書き換えたくない場合）は、`z.nativeEnum()` を使用できます。
 
-**Numeric enums**
+**数値列挙型**
 
 ```ts
 enum Fruits {
@@ -1017,7 +1017,7 @@ FruitEnum.parse(1); // passes
 FruitEnum.parse(3); // fails
 ```
 
-**String enums**
+**文字列列挙型**
 
 ```ts
 enum Fruits {
@@ -1037,9 +1037,9 @@ FruitEnum.parse(0); // passes
 FruitEnum.parse("Cantaloupe"); // fails
 ```
 
-**Const enums**
+**定数列挙型**
 
-The `.nativeEnum()` function works for `as const` objects as well. ⚠️ `as const` requires TypeScript 3.4+!
+`.nativeEnum()` 関数は `as const` オブジェクトでも動作します。⚠️ `as const` には TypeScript 3.4 以上が必要です。
 
 ```ts
 const Fruits = {
@@ -1057,15 +1057,15 @@ FruitEnum.parse(3); // passes
 FruitEnum.parse("Cantaloupe"); // fails
 ```
 
-You can access the underlying object with the `.enum` property:
+`.enum` プロパティを使用して、基礎となるオブジェクトにアクセスできます。
 
 ```ts
 FruitEnum.enum.Apple; // "apple"
 ```
 
-## Optionals
+## オプション
 
-You can make any schema optional with `z.optional()`. This wraps the schema in a `ZodOptional` instance and returns the result.
+`z.optional()` を使用するとで任意のスキーマをオプションにすることができます。スキーマを `ZodOptional` インスタンスでラップし、その結果を返します。
 
 ```ts
 const schema = z.optional(z.string());
@@ -1074,7 +1074,7 @@ schema.parse(undefined); // => returns undefined
 type A = z.infer<typeof schema>; // string | undefined
 ```
 
-For convenience, you can also call the `.optional()` method on an existing schema.
+便宜上、既存のスキーマで `.optional()` メソッドを呼び出すこともできます。
 
 ```ts
 const user = z.object({
@@ -1083,7 +1083,7 @@ const user = z.object({
 type C = z.infer<typeof user>; // { username?: string | undefined };
 ```
 
-You can extract the wrapped schema from a `ZodOptional` instance with `.unwrap()`.
+`.unwrap()` を使用して、`ZodOptional` インスタンスからラップされたスキーマを抽出できます。
 
 ```ts
 const stringSchema = z.string();

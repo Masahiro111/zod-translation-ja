@@ -1271,13 +1271,13 @@ const deepPartialUser = user.deepPartial();
 */
 ```
 
-> Important limitation: deep partials only work as expected in hierarchies of objects, arrays, and tuples.
+> 重要な制限：`.deepPartial` は、オブジェクト、配列、タプルの階層でのみ機能します。
 
 ### `.required`
 
-Contrary to the `.partial` method, the `.required` method makes all properties required.
+`.partial` メソッドとは異なり、`.required` メソッドはすべてのプロパティを必須とします。
 
-Starting from this object:
+次のオブジェクトから始めてみましょう。
 
 ```ts
 const user = z
@@ -1289,14 +1289,14 @@ const user = z
 // { email?: string | undefined; username?: string | undefined }
 ```
 
-We can create a required version:
+`.required` を付与してみましょう。
 
 ```ts
 const requiredUser = user.required();
 // { email: string; username: string }
 ```
 
-You can also specify which properties to make required:
+必須となるプロパティを個別に指定することもできます。
 
 ```ts
 const requiredEmail = user.required({
@@ -1312,7 +1312,7 @@ const requiredEmail = user.required({
 
 ### `.passthrough`
 
-By default Zod object schemas strip out unrecognized keys during parsing.
+デフォルトでは、Zod オブジェクトスキーマは解析中に認識されないキーを削除します。
 
 ```ts
 const person = z.object({
@@ -1327,7 +1327,7 @@ person.parse({
 // extraKey has been stripped
 ```
 
-Instead, if you want to pass through unknown keys, use `.passthrough()` .
+代わりに、不明なキーでもパスする場合は `.passthrough()` を使用します。
 
 ```ts
 person.passthrough().parse({
@@ -1339,7 +1339,7 @@ person.passthrough().parse({
 
 ### `.strict`
 
-By default Zod object schemas strip out unrecognized keys during parsing. You can _disallow_ unknown keys with `.strict()` . If there are any unknown keys in the input, Zod will throw an error.
+デフォルトでは、Zod オブジェクトスキーマは解析中に認識されないキーを削除します。`.strict()` を使用して、不明なキーを _禁止_ することができます。入力に不明なキーがある場合、Zod はエラーをスローします。
 
 ```ts
 const person = z
@@ -1357,11 +1357,11 @@ person.parse({
 
 ### `.strip`
 
-You can use the `.strip` method to reset an object schema to the default behavior (stripping unrecognized keys).
+`.strip` メソッドを使用すると、オブジェクトスキーマをデフォルトの動作（認識されないキーの削除）にリセットできます。
 
 ### `.catchall`
 
-You can pass a "catchall" schema into an object schema. All unknown keys will be validated against it.
+`catchall` スキーマをオブジェクトスキーマに渡すことができます。未知のキーはすべてこのスキーマでバリデーションされます。
 
 ```ts
 const person = z
@@ -1382,9 +1382,9 @@ person.parse({
 // => throws ZodError
 ```
 
-Using `.catchall()` obviates `.passthrough()` , `.strip()` , or `.strict()`. All keys are now considered "known".
+`.catchall()` を使用すると、`.passthrough()`、`.strip()`、`.strict()` が不要になります。すべてのキーは「既知」と見なされます。
 
-## Arrays
+## 配列
 
 ```ts
 const stringArray = z.array(z.string());
@@ -1393,7 +1393,7 @@ const stringArray = z.array(z.string());
 const stringArray = z.string().array();
 ```
 
-Be careful with the `.array()` method. It returns a new `ZodArray` instance. This means the _order_ in which you call methods matters. For instance:
+`.array()` メソッドは注意して使用してください。新しい `ZodArray` インスタンスを返します。つまり、メソッドを呼び出す _順序_ が重要になります。次のような例をご覧ください。
 
 ```ts
 z.string().optional().array(); // (string | undefined)[]
@@ -1402,7 +1402,7 @@ z.string().array().optional(); // string[] | undefined
 
 ### `.element`
 
-Use `.element` to access the schema for an element of the array.
+配列要素のスキーマにアクセスするには、`.element` を使用します。
 
 ```ts
 stringArray.element; // => string schema
@@ -1410,7 +1410,7 @@ stringArray.element; // => string schema
 
 ### `.nonempty`
 
-If you want to ensure that an array contains at least one element, use `.nonempty()`.
+配列に少なくとも 1 つの要素が含まれていることを確認したい場合は、`.nonempty()` を使用します。
 
 ```ts
 const nonEmptyStrings = z.string().array().nonempty();
@@ -1421,7 +1421,7 @@ nonEmptyStrings.parse([]); // throws: "Array cannot be empty"
 nonEmptyStrings.parse(["Ariana Grande"]); // passes
 ```
 
-You can optionally specify a custom error message:
+オプションでカスタムエラーメッセージを設定できます。
 
 ```ts
 // optional custom error message
@@ -1440,9 +1440,9 @@ z.string().array().length(5); // must contain 5 items exactly
 
 Unlike `.nonempty()` these methods do not change the inferred type.
 
-## Tuples
+## タプル
 
-Unlike arrays, tuples have a fixed number of elements and each element can have a different type.
+配列とは異なり、タプルには固定数の要素があり、各要素は異なる型を持つことができます。
 
 ```ts
 const athleteSchema = z.tuple([
@@ -1457,7 +1457,7 @@ type Athlete = z.infer<typeof athleteSchema>;
 // type Athlete = [string, number, { pointsScored: number }]
 ```
 
-A variadic ("rest") argument can be added with the `.rest` method.
+`.rest` メソッドを使用して、可変長引数 ("rest") を追加できます。
 
 ```ts
 const variadicTuple = z.tuple([z.string()]).rest(z.number());
@@ -1465,9 +1465,9 @@ const result = variadicTuple.parse(["hello", 1, 2, 3]);
 // => [string, ...number[]];
 ```
 
-## Unions
+## ユニオン
 
-Zod includes a built-in `z.union` method for composing "OR" types.
+Zod には、「OR」型を構成するための `z.union` 組み込みメソッドが含まれています。
 
 ```ts
 const stringOrNumber = z.union([z.string(), z.number()]);
@@ -1737,7 +1737,7 @@ const schema: z.ZodType<Output, z.ZodTypeDef, Input> = baseSchema.extend({
 
 Thanks to [marcus13371337](https://github.com/marcus13371337) and [JoelBeeldi](https://github.com/JoelBeeldi) for this example.
 
-### JSON type
+### JSON 型
 
 If you want to validate any JSON value, you can use the snippet below.
 
@@ -1992,15 +1992,15 @@ if (!result.success) {
 
 ### `.safeParseAsync`
 
-> Alias: `.spa`
+> `.spa` としてエイリアスされています。
 
-An asynchronous version of `safeParse`.
+次の例は `safeParse` の非同期バージョンです。
 
 ```ts
 await stringSchema.safeParseAsync("billie");
 ```
 
-For convenience, this has been aliased to `.spa`:
+便宜上、これは `.spa` にエイリアスされています。
 
 ```ts
 await stringSchema.spa("billie");

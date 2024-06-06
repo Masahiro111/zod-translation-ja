@@ -1438,7 +1438,7 @@ z.string().array().max(5); // must contain 5 or fewer items
 z.string().array().length(5); // must contain 5 items exactly
 ```
 
-Unlike `.nonempty()` these methods do not change the inferred type.
+`.nonempty()` とは異なり、これらのメソッドは推論された型を変更しません。
 
 ## タプル
 
@@ -1476,19 +1476,19 @@ stringOrNumber.parse("foo"); // passes
 stringOrNumber.parse(14); // passes
 ```
 
-Zod will test the input against each of the "options" in order and return the first value that validates successfully.
+Zodは、各「オプション 」に対して入力を順番にテストし、バリデーションに成功した最初の値を返します。
 
-For convenience, you can also use the [`.or` method](#or):
+便宜上、[`.or` メソッド](#or) も使用できます。
 
 ```ts
 const stringOrNumber = z.string().or(z.number());
 ```
 
-**Optional string validation:**
+**オプションの文字列バリデーション**
 
-To validate an optional form input, you can union the desired string validation with an empty string [literal](#literals).
+オプションのフォーム入力をバリデーションするには、希望の文字列バリデーションを空の文字列 [literal](#literals) と結合することができます。
 
-This example validates an input that is optional but needs to contain a [valid URL](#strings):
+この例では、入力は任意だが [有効な URL](#strings) を含む必要がある入力のバリデーションを行います。
 
 ```ts
 const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);
@@ -1500,9 +1500,9 @@ console.log(optionalUrl.safeParse("https://zod.dev").success); // true
 console.log(optionalUrl.safeParse("not a valid url").success); // false
 ```
 
-## Discriminated unions
+## 判別可能なユニオン
 
-A discriminated union is a union of object schemas that all share a particular key.
+判別可能なユニオンは、特定のキーを共有するオブジェクトスキーマのユニオンです。
 
 ```ts
 type MyUnion =
@@ -1510,9 +1510,9 @@ type MyUnion =
   | { status: "failed"; error: Error };
 ```
 
-Such unions can be represented with the `z.discriminatedUnion` method. This enables faster evaluation, because Zod can check the _discriminator key_ (`status` in the example above) to determine which schema should be used to parse the input. This makes parsing more efficient and lets Zod report friendlier errors.
+このようなユニオンは、`z.discriminatedUnion` メソッドで表すことができます。これにより、Zod は _discriminator key_ （上記の例では `status`）をチェックして、どのスキーマを使って入力を解析を判断できるため、高速な評価が可能になります。これにより、解析がより効率的になり、Zod はよりわかりやすいエラーを報告できるようになります。
 
-With the basic union method, the input is tested against each of the provided "options", and in the case of invalidity, issues for all the "options" are shown in the zod error. On the other hand, the discriminated union allows for selecting just one of the "options", testing against it, and showing only the issues related to this "option".
+基本的なユニオンメソッドでは、入力は指定された「オプション」のそれぞれに対してテストされ、無効の場合は、すべての「オプション」の問題が zod のエラーとして表示されます。一方、判別可能なユニオンは、「オプション」の 1 つだけを選択し、それに対してテストし、この「オプション」に関連する問題だけを表示することができます。
 
 ```ts
 const myUnion = z.discriminatedUnion("status", [
@@ -1523,13 +1523,13 @@ const myUnion = z.discriminatedUnion("status", [
 myUnion.parse({ status: "success", data: "yippie ki yay" });
 ```
 
-You can extract a reference to the array of schemas with the `.options` property.
+`.options` プロパティを使用して、スキーマの配列への参照を抽出できます。
 
 ```ts
 myUnion.options; // [ZodObject<...>, ZodObject<...>]
 ```
 
-To merge two or more discriminated unions, use `.options` with destructuring.
+2 つ以上の判別可能なユニオンをマージするには、デストラクチャリングで `.options` を使用します。
 
 ```ts
 const A = z.discriminatedUnion("status", [
@@ -1544,9 +1544,9 @@ const AB = z.discriminatedUnion("status", [...A.options, ...B.options]);
 
 ## Records
 
-Record schemas are used to validate types such as `Record<string, number>`. This is particularly useful for storing or caching items by ID.
+レコードスキーマは `Record<string, number>` のような型をバリデーションするために使用されます。これは特に ID でアイテムを保存したりキャッシュしたりするのに便利です。
 
-<!-- If you want to validate the _values_ of an object against some schema but don't care about the keys, use `z.record(valueType)`:
+<!-- オブジェクトの _values_ をスキーマに照らして検証したいが、キーは気にしない場合は `z.record(valueType)` を使用すると良いでしょう。
 
 ```ts
 const NumberCache = z.record(z.number());
@@ -1563,7 +1563,7 @@ type UserStore = z.infer<typeof UserStore>;
 // => Record<string, { name: string }>
 ```
 
-The schema and inferred type can be used like so:
+スキーマと推論された型は次のように使用できます。
 
 ```ts
 const userStore: UserStore = {};
@@ -1577,11 +1577,11 @@ userStore["77d2586b-9e8e-4ecf-8b21-ea7e0530eadd"] = {
 }; // TypeError
 ```
 
-**A note on numerical keys**
+**数字キーの注意**
 
-While `z.record(keyType, valueType)` is able to accept numerical key types and TypeScript's built-in Record type is `Record<KeyType, ValueType>`, it's hard to represent the TypeScript type `Record<number, any>` in Zod.
+`z.record(keyType, valueType)` は、数値のキー型を受け取ることができます。TypeScript 組み込みの Record 型は `Record<KeyType, ValueType>` ですが、TypeScript の型である `Record<number, any>` を Zod で表現するのは困難です。
 
-As it turns out, TypeScript's behavior surrounding `[k: number]` is a little unintuitive:
+結局のところ、TypeScript の `[k: number]` に関する動作は少し直感的ではありません。
 
 ```ts
 const testMap: { [k: number]: string } = {
@@ -2690,7 +2690,7 @@ makeSchemaOptional(z.number());
 // Error: 'ZodNumber' is not assignable to parameter of type 'ZodType<string, ZodTypeDef, string>'
 ```
 
-### Error handling
+### エラー処理
 
 Zod provides a subclass of Error called `ZodError`. ZodErrors contain an `issues` array containing detailed information about the validation problems.
 

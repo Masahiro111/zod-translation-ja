@@ -1594,7 +1594,7 @@ for (const key in testMap) {
 // prints: `1: string`
 ```
 
-As you can see, JavaScript automatically casts all object keys to strings under the hood. Since Zod is trying to bridge the gap between static and runtime types, it doesn't make sense to provide a way of creating a record schema with numerical keys, since there's no such thing as a numerical key in runtime JavaScript.
+ご覧のとおり、JavaScript は内部ですべてのオブジェクトキーを文字列に自動的にキャストします。Zod はスタティック型とランタイム型の間のギャップを埋めようとしているため、ランタイム時の JavaScript には数値キーというものが存在しないため、数値キーでレコードスキーマを作成する方法は意味をなしません。
 
 ## Maps
 
@@ -1613,7 +1613,7 @@ type NumberSet = z.infer<typeof numberSet>;
 // type NumberSet = Set<number>
 ```
 
-Set schemas can be further constrained with the following utility methods.
+set スキーマは以下のユーティリティメソッドでさらに細かく制約することができます。
 
 ```ts
 z.set(z.string()).nonempty(); // must contain at least one item
@@ -1624,7 +1624,7 @@ z.set(z.string()).size(5); // must contain 5 items exactly
 
 ## Intersections
 
-Intersections are useful for creating "logical AND" types. This is useful for intersecting two object types.
+交差は、「論理 AND」型を作成する場合に便利です。これは、2 つのオブジェクトタイプを掛け合わせるのに便利です。
 
 ```ts
 const Person = z.object({
@@ -1641,7 +1641,7 @@ const EmployedPerson = z.intersection(Person, Employee);
 const EmployedPerson = Person.and(Employee);
 ```
 
-Though in many cases, it is recommended to use `A.merge(B)` to merge two objects. The `.merge` method returns a new `ZodObject` instance, whereas `A.and(B)` returns a less useful `ZodIntersection` instance that lacks common object methods like `pick` and `omit`.
+多くの場合、2つのオブジェクトをマージするには `A.merge(B)` を使用することをお勧めします。`.merge` メソッドは新しい `ZodObject` インスタンスを返しますが、`A.and(B)` はあまり役に立たない `ZodIntersection` インスタンスを返します。このインスタンスには `pick` や `omit` といった一般的なオブジェクトメソッドがありません。
 
 ```ts
 const a = z.union([z.number(), z.string()]);
@@ -1651,7 +1651,7 @@ const c = z.intersection(a, b);
 type c = z.infer<typeof c>; // => number
 ```
 
-<!-- Intersections in Zod are not smart. Whatever data you pass into `.parse()` gets passed into the two intersected schemas. Because Zod object schemas don't allow any unknown keys by default, there are some unintuitive behavior surrounding intersections of object schemas. -->
+<!-- Zod の Intersection はスマートではありません。`.parse()` に渡したデータは、Intersection する 2 つのスキーマに渡されます。Zod オブジェクトスキーマは、デフォルトでは未知のキーを許可しないため、オブジェクトスキーマの Intersection には直感的でない振る舞いがあります。 -->
 
 <!--
 
@@ -1670,7 +1670,7 @@ type Teacher = z.infer<typeof Teacher>;
 // { id:string; name:string };
 ```  -->
 
-## Recursive types
+## 再帰型
 
 You can define a recursive schema in Zod, but because of a limitation of TypeScript, their type can't be statically inferred. Instead you'll need to define the type definition manually, and provide it to Zod as a "type hint".
 

@@ -1672,7 +1672,7 @@ type Teacher = z.infer<typeof Teacher>;
 
 ## 再帰型
 
-You can define a recursive schema in Zod, but because of a limitation of TypeScript, their type can't be statically inferred. Instead you'll need to define the type definition manually, and provide it to Zod as a "type hint".
+Zod では再帰的なスキーマを定義することができますが、TypeScript の制限により、その型を静的に推論することはできません。その代わりに、手動で型定義を行い、Zod に「型ヒント」として提示する必要があります。
 
 ```ts
 const baseCategorySchema = z.object({
@@ -1703,16 +1703,11 @@ categorySchema.parse({
 }); // passes
 ```
 
-Thanks to [crasite](https://github.com/crasite) for this example.
+この例を教えてくれた [crasite](https://github.com/crasite) に感謝いたします。
 
-### ZodType with ZodEffects
+### ZodType と ZodEffects
 
-When using `z.ZodType` with `z.ZodEffects` (
-[`.refine`](https://github.com/colinhacks/zod#refine),
-[`.transform`](https://github.com/colinhacks/zod#transform),
-[`preprocess`](https://github.com/colinhacks/zod#preprocess),
-etc...
-), you will need to define the input and output types of the schema. `z.ZodType<Output, z.ZodTypeDef, Input>`
+`z.ZodType` を `z.ZodEffects` と一緒に使用する場合（[`.refine`](https://github.com/colinhacks/zod#refine)、[`.transform`](https://github.com/colinhacks/zod#transform)、[`preprocess`](https://github.com/colinhacks/zod#preprocess) 等） では、スキーマの入力と出力の型を定義する必要があります。`z.ZodType<Output, z.ZodTypeDef, Input>`
 
 ```ts
 const isValidId = (id: string): id is `${string}/${string}` =>
@@ -1735,11 +1730,11 @@ const schema: z.ZodType<Output, z.ZodTypeDef, Input> = baseSchema.extend({
 });
 ```
 
-Thanks to [marcus13371337](https://github.com/marcus13371337) and [JoelBeeldi](https://github.com/JoelBeeldi) for this example.
+この例を提供してくれた [marcus13371337](https://github.com/marcus13371337) と [JoelBeeldi](https://github.com/JoelBeeldi) に感謝します。
 
 ### JSON 型
 
-If you want to validate any JSON value, you can use the snippet below.
+任意の JSON 値をバリデーションする場合は、以下のスニペットを使用できます。
 
 ```ts
 const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()]);
@@ -1752,13 +1747,13 @@ const jsonSchema: z.ZodType<Json> = z.lazy(() =>
 jsonSchema.parse(data);
 ```
 
-Thanks to [ggoodman](https://github.com/ggoodman) for suggesting this.
+これを提案してくれた [ggoodman](https://github.com/ggoodman) に感謝します。
 
-### Cyclical objects
+### 周期的なオブジェクト
 
-Despite supporting recursive schemas, passing cyclical data into Zod will cause an infinite loop in some cases.
+再帰的なスキーマをサポートしているにもかかわらず、周期的なデータを Zod に渡すと、場合によっては無限ループが発生してしまいます。
 
-> To detect cyclical objects before they cause problems, consider [this approach](https://gist.github.com/colinhacks/d35825e505e635df27cc950776c5500b).
+> 問題が発生する前に周期的なオブジェクトを検出するには、[このアプローチ](https://gist.github.com/colinhacks/d35825e505e635df27cc950776c5500b) を検討してください。
 
 ## Promises
 
@@ -1766,10 +1761,10 @@ Despite supporting recursive schemas, passing cyclical data into Zod will cause 
 const numberPromise = z.promise(z.number());
 ```
 
-"Parsing" works a little differently with promise schemas. Validation happens in two parts:
+promise スキーマにおいて「parsing」は少し異なって動作します。バリデーションは２つのパートに分かれて行われます。
 
-1. Zod synchronously checks that the input is an instance of Promise (i.e. an object with `.then` and `.catch` methods.).
-2. Zod uses `.then` to attach an additional validation step onto the existing Promise. You'll have to use `.catch` on the returned Promise to handle validation failures.
+1. Zod は、入力が Promise のインスタンス (つまり、`.then` メソッドと `.catch` メソッドを持つオブジェクト) であることを同期的にチェックします。
+2. Zod は `.then` を使用して、既存の Promise に追加の検証ステップを追加します。検証の失敗を処理するには、返された Promise で `.catch` を使用する必要があります。
 
 ```ts
 numberPromise.parse("tuna");
@@ -1787,13 +1782,13 @@ const test = async () => {
 };
 ```
 
-<!-- #### Non-native promise implementations
+<!-- #### 非ネイティブの Promise 実装
 
-When "parsing" a promise, Zod checks that the passed value is an object with `.then` and `.catch` methods — that's it. So you should be able to pass non-native Promises (Bluebird, etc) into `z.promise(...).parse` with no trouble. One gotcha: the return type of the parse function will be a _native_ `Promise` , so if you have downstream logic that uses non-standard Promise methods, this won't work. -->
+プロミスを「解析」するとき、Zod は渡された値が `.then` メソッドと `.catch` メソッドを持つオブジェクトであるかどうかをチェックします。それだけです。そのため、非ネイティブのプロミス（Bluebird など）を `z.promise(...).parse` に問題なく渡すことができます。1 つ注意点があります。parse 関数の戻り値の型はネイティブの `Promise` になるため、下流に非標準の Promise メソッドを使用するロジックがある場合、これは機能しません。 -->
 
 ## Instanceof
 
-You can use `z.instanceof` to check that the input is an instance of a class. This is useful to validate inputs against classes that are exported from third-party libraries.
+`z.instanceof` を使用すると、入力がクラスのインスタンスであることを確認できます。これは、サードパーティのライブラリからエクスポートされたクラスに対して入力を検証するのに役立ちます。
 
 ```ts
 class Test {
@@ -1807,11 +1802,11 @@ TestSchema.parse(new Test()); // passes
 TestSchema.parse(blob); // throws
 ```
 
-## Functions
+## 関数スキーマ
 
-Zod also lets you define "function schemas". This makes it easy to validate the inputs and outputs of a function without intermixing your validation code and "business logic".
+Zod では「関数スキーマ」を定義することもできます。これにより、バリデーションコードと 「ビジネスロジック 」を混在させることなく、関数の入力と出力を簡単に検証できます。
 
-You can create a function schema with `z.function(args, returnType)` .
+`z.function(args, returnType)` を使用して関数スキーマを作成できます。
 
 ```ts
 const myFunction = z.function();
@@ -1820,7 +1815,7 @@ type myFunction = z.infer<typeof myFunction>;
 // => ()=>unknown
 ```
 
-Define inputs and outputs.
+入力と出力を定義します。
 
 ```ts
 const myFunction = z

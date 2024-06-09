@@ -1839,7 +1839,7 @@ type myFunction = z.infer<typeof myFunction>;
 // => (arg0: string)=>number
 ``` -->
 
-Function schemas have an `.implement()` method which accepts a function and returns a new function that automatically validates its inputs and outputs.
+関数スキーマには、関数を受け取って、その入出力を自動的に検証する新しい関数を返す `.implement()` メソッドがあります。
 
 ```ts
 const trimmedLength = z
@@ -1855,9 +1855,9 @@ trimmedLength("sandwich"); // => 8
 trimmedLength(" asdf "); // => 4
 ```
 
-If you only care about validating inputs, just don't call the `.returns()` method. The output type will be inferred from the implementation.
+入力の検証のみを行うのであれば `.returns()` メソッドを呼び出さないでください。出力の型は実装から推測されます。
 
-> You can use the special `z.void()` option if your function doesn't return anything. This will let Zod properly infer the type of void-returning functions. (Void-returning functions actually return undefined.)
+> 関数が何も返さない場合は、特別な `z.void()` オプションを使用できます。これにより、Zod は void を返す関数の型を適切に推測できるようになります。（void を返す関数は実際には undefined を返します。）
 
 ```ts
 const myFunction = z
@@ -1870,7 +1870,7 @@ const myFunction = z
 myFunction; // (arg: string)=>number[]
 ```
 
-Extract the input and output schemas from a function schema.
+関数スキーマから入力スキーマと出力スキーマを取り出します。
 
 ```ts
 myFunction.parameters();
@@ -1880,28 +1880,28 @@ myFunction.returnType();
 // => ZodBoolean
 ```
 
-<!-- `z.function()` accepts two arguments:
+<!-- `z.function()` は２つの引数を受け取ります
 
-* `args: ZodTuple` The first argument is a tuple (created with `z.tuple([...])` and defines the schema of the arguments to your function. If the function doesn't accept arguments, you can pass an empty tuple (`z.tuple([])`).
-* `returnType: any Zod schema` The second argument is the function's return type. This can be any Zod schema. -->
+* `args: ZodTuple` 最初の引数はタプル (`z.tuple([...])` で作成され、関数への引数のスキーマを定義します。関数が引数を受け取らない場合は、空のタプル (`z.tuple([])`) を渡すことができます。
+* `returnType: any Zod schema` ２番目の引数は関数の戻り値の型です。任意の Zod スキーマを指定できます。 -->
 
-## Preprocess
+## プリプロセス
 
-> Zod now supports primitive coercion without the need for `.preprocess()`. See the [coercion docs](#coercion-for-primitives) for more information.
+> Zod は、`.preprocess()` を必要とせずにプリミティブな強制機能をサポートするようになりました。詳細については、[強制のドキュメント](#coercion-for-primitives)を参照してください。
 
-Typically Zod operates under a "parse then transform" paradigm. Zod validates the input first, then passes it through a chain of transformation functions. (For more information about transforms, read the [.transform docs](#transform).)
+通常、Zod は「解析してから変換する」原則で動作します。Zod は最初に入力を検証し、それを一連の変換関数に渡します。（変換の詳細については、[.transform ドキュメント](#transform) を参照してください）
 
-But sometimes you want to apply some transform to the input _before_ parsing happens. A common use case: type coercion. Zod enables this with the `z.preprocess()`.
+しかし、解析が行われる前に入力に何らかの変換を適用したい場合もあります。よくある使用例として、型の強制があります。Zod は、`z.preprocess()` を使用してこれを可能にします。
 
 ```ts
 const castToString = z.preprocess((val) => String(val), z.string());
 ```
 
-This returns a `ZodEffects` instance. `ZodEffects` is a wrapper class that contains all logic pertaining to preprocessing, refinements, and transforms.
+これは `ZodEffects` インスタンスを返します。`ZodEffects` は、プリプロセス、リファインメント、変換に関連するすべてのロジックを含むラッパークラスです。
 
-## Custom schemas
+## カスタムスキーマ
 
-You can create a Zod schema for any TypeScript type by using `z.custom()`. This is useful for creating schemas for types that are not supported by Zod out of the box, such as template string literals.
+`z.custom()` を使用すると、任意の TypeScript 型の Zod スキーマを作成できます。これは、テンプレート文字列リテラルなど、Zod がサポートしていない型のスキーマを作成するのに便利です。
 
 ```ts
 const px = z.custom<`${number}px`>((val) => {
@@ -1914,29 +1914,29 @@ px.parse("42px"); // "42px"
 px.parse("42vw"); // throws;
 ```
 
-If you don't provide a validation function, Zod will allow any value. This can be dangerous!
+バリデーション関数を提供しない場合、Zod はどんな値でも許可してしまいます。これは危険があります。
 
 ```ts
 z.custom<{ arg: string }>(); // performs no validation
 ```
 
-You can customize the error message and other options by passing a second argument. This parameter works the same way as the params parameter of [`.refine`](#refine).
+２番目の引数を渡すことで、エラーメッセージやその他のオプションをカスタマイズできます。このパラメータは、[`.refine`](#refine) の params パラメータと同じように機能します。
 
 ```ts
 z.custom<...>((val) => ..., "custom error message");
 ```
 
-## Schema methods
+## スキーマメソッド
 
-All Zod schemas contain certain methods.
+すべての Zod スキーマには特定のメソッドが含まれています。
 
 ### `.parse`
 
 `.parse(data: unknown): T`
 
-Given any Zod schema, you can call its `.parse` method to check `data` is valid. If it is, a value is returned with full type information! Otherwise, an error is thrown.
+Zod スキーマを指定すると、`.parse` メソッドを呼び出して `data` が有効かどうかを確認できます。有効であれば、完全な型情報を含む値が返されます。そうでない場合は、エラーがスローされます。
 
-> IMPORTANT: The value returned by `.parse` is a _deep clone_ of the variable you passed in.
+> 重要：`.parse` によって返される値は、渡された変数の _ディープクローン_ です。
 
 ```ts
 const stringSchema = z.string();
@@ -1949,7 +1949,7 @@ stringSchema.parse(12); // throws error
 
 `.parseAsync(data:unknown): Promise<T>`
 
-If you use asynchronous [refinements](#refine) or [transforms](#transform) (more on those later), you'll need to use `.parseAsync`.
+非同期の [refinements](#refine) や [transforms](#transform) （後ほど詳しく説明します）を使用する場合は、`.parseAsync` を使用する必要があります。
 
 ```ts
 const stringSchema = z.string().refine(async (val) => val.length <= 8);
@@ -1962,7 +1962,7 @@ await stringSchema.parseAsync("hello world"); // => throws error
 
 `.safeParse(data:unknown): { success: true; data: T; } | { success: false; error: ZodError; }`
 
-If you don't want Zod to throw errors when validation fails, use `.safeParse`. This method returns an object containing either the successfully parsed data or a ZodError instance containing detailed information about the validation problems.
+バリデーションに失敗した際に Zod がエラーをスローしないようにするには、`.safeParse` を使用します。このメソッドは、パースに成功したデータか、バリデーションの問題に関する詳細情報を含む ZodError インスタンスを含むオブジェクトを返します。
 
 ```ts
 stringSchema.safeParse(12);
@@ -1972,7 +1972,7 @@ stringSchema.safeParse("billie");
 // => { success: true; data: 'billie' }
 ```
 
-The result is a _discriminated union_, so you can handle errors very conveniently:
+結果は _discriminated union_ なので、非常に便利にエラーを処理できます。
 
 ```ts
 const result = stringSchema.safeParse("billie");

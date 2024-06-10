@@ -2005,11 +2005,11 @@ await stringSchema.spa("billie");
 
 `.refine(validator: (data:T)=>any, params?: RefineParams)`
 
-Zod lets you provide custom validation logic via _refinements_. (For advanced features like creating multiple issues and customizing error codes, see [`.superRefine`](#superrefine).)
+Zod では _refinements_ を経由してカスタムバリデーションロジックを提供しています。（複数の問題の作成やエラーコードのカスタマイズなどの高度な機能については、[`.superRefine`](#superrefine) を参照してください）
 
-Zod was designed to mirror TypeScript as closely as possible. But there are many so-called "refinement types" you may wish to check for that can't be represented in TypeScript's type system. For instance: checking that a number is an integer or that a string is a valid email address.
+Zod は、TypeScript を可能な限り忠実に反映するように設計されています。ただし、TypeScript の型システムでは表現できないような、いわゆる「リファインメント型」が多数あります。たとえば、数値が整数であるかどうかや、文字列が有効な電子メールアドレスであるかどうかをチェックします。
 
-For example, you can define a custom validation check on _any_ Zod schema with `.refine` :
+たとえば、`.refine` を使用して、_any_ Zod スキーマのカスタムバリデーションチェックを定義できます。
 
 ```ts
 const myString = z.string().refine((val) => val.length <= 255, {
@@ -2017,14 +2017,14 @@ const myString = z.string().refine((val) => val.length <= 255, {
 });
 ```
 
-> ⚠️ Refinement functions should not throw. Instead they should return a falsy value to signal failure.
+> ⚠️ リファインメント関数は例外をスローすべきではありません。代わりに、失敗を通知するために偽の値を返す必要があります。
 
-#### Arguments
+#### 引数
 
-As you can see, `.refine` takes two arguments.
+ご覧のとおり、`.refine` は２つの引数を取ります。
 
-1. The first is the validation function. This function takes one input (of type `T` — the inferred type of the schema) and returns `any`. Any truthy value will pass validation. (Prior to zod@1.6.2 the validation function had to return a boolean.)
-2. The second argument accepts some options. You can use this to customize certain error-handling behavior:
+1. 第１引数は、バリデーション関数です。この関数は１つの入力（スキーマの推論型である `T` 型）を受け取り、`any` を返します。真の値はすべてバリデーションに合格します。（zod@1.6.2 より前は、バリデーション関数はブール値を返す必要がありました）
+2. 第２引数は、いくつかのオプションを受け入れます。これを使用して、特定のエラー処理動作をカスタマイズできます。
 
 ```ts
 type RefineParams = {
@@ -2040,7 +2040,7 @@ type RefineParams = {
 };
 ```
 
-For advanced cases, the second argument can also be a function that returns `RefineParams`.
+高度なケースでは、第２引数は `RefineParams` を返す関数にすることもできます。
 
 ```ts
 const longString = z.string().refine(
@@ -2049,7 +2049,7 @@ const longString = z.string().refine(
 );
 ```
 
-#### Customize error path
+#### エラーパスをカスタマイズ
 
 ```ts
 const passwordForm = z
@@ -2065,7 +2065,7 @@ const passwordForm = z
 passwordForm.parse({ password: "asdf", confirm: "qwer" });
 ```
 
-Because you provided a `path` parameter, the resulting error will be:
+`path` パラメータを指定したため、結果として生じるエラーは次のようになります。
 
 ```ts
 ZodError {
@@ -2077,9 +2077,9 @@ ZodError {
 }
 ```
 
-#### Asynchronous refinements
+#### 非同期通信のリファインメント
 
-Refinements can also be async:
+非同期でリファインメントを行うこともできます。
 
 ```ts
 const userId = z.string().refine(async (id) => {
@@ -2088,11 +2088,11 @@ const userId = z.string().refine(async (id) => {
 });
 ```
 
-> ⚠️ If you use async refinements, you must use the `.parseAsync` method to parse data! Otherwise Zod will throw an error.
+> ⚠️ 非同期通信でリファインメントを使用する場合は、`.parseAsync` メソッドを使用してデータを解析する必要があります。そうしないと、Zod はエラーをスローします。
 
-#### Relationship to transforms
+#### トランスフォームとの関係
 
-Transforms and refinements can be interleaved:
+トランスフォームとリファインメントは、組み合わせるて使用するこも可能です。
 
 ```ts
 z.string()
@@ -2100,7 +2100,7 @@ z.string()
   .refine((val) => val > 25);
 ```
 
-<!-- Note that the `path` is set to `["confirm"]` , so you can easily display this error underneath the "Confirm password" textbox.
+<!-- `path` が `["confirm"]` に設定されているため、このエラーを「Confirm password」テキストボックスの下に簡単に表示できることに注意してください。
 
 ```ts
 const allForms = z.object({ passwordForm }).parse({
@@ -2111,7 +2111,7 @@ const allForms = z.object({ passwordForm }).parse({
 });
 ```
 
-would result in
+結果として
 
 ```
 
@@ -2126,7 +2126,7 @@ ZodError {
 
 ### `.superRefine`
 
-The `.refine` method is actually syntactic sugar atop a more versatile (and verbose) method called `superRefine`. Here's an example:
+`.refine` メソッドは、実際にはより多機能で（そして冗長な）superRefine メソッドの糖衣構文です。次に例を示します。
 
 ```ts
 const Strings = z.array(z.string()).superRefine((val, ctx) => {
@@ -2149,13 +2149,13 @@ const Strings = z.array(z.string()).superRefine((val, ctx) => {
 });
 ```
 
-You can add as many issues as you like. If `ctx.addIssue` is _not_ called during the execution of the function, validation passes.
+好きなだけ問題を追加することができます。関数の実行中に `ctx.addIssue` が呼び出されなければ、検証は成功です。
 
-Normally refinements always create issues with a `ZodIssueCode.custom` error code, but with `superRefine` it's possible to throw issues of any `ZodIssueCode`. Each issue code is described in detail in the Error Handling guide: [ERROR_HANDLING.md](ERROR_HANDLING.md).
+通常、リファインメントでは常に `ZodIssueCode.custom` エラーコードでイシューを作成しますが、`superRefine` を使用すると、任意の `ZodIssueCode` のイシューをスローできます。各イシューコードの詳細については、エラー処理ガイド [ERROR_HANDLING.md](ERROR_HANDLING.md) を参照してください。
 
-#### Abort early
+#### 早期の中断
 
-By default, parsing will continue even after a refinement check fails. For instance, if you chain together multiple refinements, they will all be executed. However, it may be desirable to _abort early_ to prevent later refinements from being executed. To achieve this, pass the `fatal` flag to `ctx.addIssue` and return `z.NEVER`.
+デフォルトでは、リファインメントチェックが失敗した後でも解析は続行されます。たとえば、複数のリファインメントを連鎖させると、それらはすべて実行されます。ただし、後続のリファインメントが実行されないように、早期に中断することが望ましい場合があります。これを実現するには、`ctx.addIssue` に `fatal` フラグを渡し、`z.NEVER` を返します。
 
 ```ts
 const schema = z.number().superRefine((val, ctx) => {
@@ -2178,7 +2178,7 @@ const schema = z.number().superRefine((val, ctx) => {
 });
 ```
 
-#### Type refinements
+#### 型のリファインメント
 
 If you provide a [type predicate](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) to `.refine()` or `.superRefine()`, the resulting type will be narrowed down to your predicate's type. This is useful if you are mixing multiple chained refinements and transformations:
 

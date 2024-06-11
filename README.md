@@ -146,40 +146,40 @@
   - [`.brand`](#brand)
   - [`.readonly`](#readonly)
   - [`.pipe`](#pipe)
-    - [You can use `.pipe()` to fix common issues with `z.coerce`.](#you-can-use-pipe-to-fix-common-issues-with-zcoerce)
-- [Guides and concepts](#guides-and-concepts)
-  - [Type inference](#type-inference)
-  - [Writing generic functions](#writing-generic-functions)
-    - [Constraining allowable inputs](#constraining-allowable-inputs)
-  - [Error handling](#error-handling)
-  - [Error formatting](#error-formatting)
-- [Comparison](#comparison)
+    - [`.pipe()` で `z.coerce` の問題を修正](#you-can-use-pipe-to-fix-common-issues-with-zcoerce)
+- [ガイドとコンセプト](#guides-and-concepts)
+  - [型推論](#type-in​​ference)
+  - [ジェネリック関数の記述](#writing-generic-functions)
+    - [許容入力の制約](#constraining-allowable-inputs)
+  - [エラー処理](#error-handling)
+  - [エラーのフォーマット](#error-formatting)
+- [比較](#comparison)
   - [Joi](#joi)
   - [Yup](#yup)
   - [io-ts](#io-ts)
   - [Runtypes](#runtypes)
   - [Ow](#ow)
-- [Changelog](#changelog)
+- [変更履歴](#changelog)
 
 ## はじめに
 
-Zod is a TypeScript-first schema declaration and validation library. I'm using the term "schema" to broadly refer to any data type, from a simple `string` to a complex nested object.
+Zod は、TypeScript ファーストのスキーマ宣言および検証ライブラリです。ここでは「スキーマ」という用語を、単純な `string` から複雑にネストされたオブジェクトまで、あらゆるデータ型を広く指すために使用しています。
 
-Zod is designed to be as developer-friendly as possible. The goal is to eliminate duplicative type declarations. With Zod, you declare a validator _once_ and Zod will automatically infer the static TypeScript type. It's easy to compose simpler types into complex data structures.
+Zod は、開発者にとって可能な限り使いやすいように設計されています。目標は、重複する型宣言を取り除くことです。Zod を使用すると、バリデーションを１回宣言するだけで、Zod が自動的に静的な TypeScript 型を推測します。より単純な型を複雑なデータ構造に組み込むのは簡単です。
 
-Some other great aspects:
+その他の素晴らしい点
 
-- Zero dependencies
-- Works in Node.js and all modern browsers
-- Tiny: 8kb minified + zipped
-- Immutable: methods (e.g. `.optional()`) return a new instance
-- Concise, chainable interface
-- Functional approach: [parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)
-- Works with plain JavaScript too! You don't need to use TypeScript.
+- 依存関係ゼロ
+- Node.js とすべての最新ブラウザで動作します
+- 極小: 8kb 縮小 + 圧縮
+- 不変: メソッド (例: `.optional()`) は新しいインスタンスを返します
+- 簡潔で連鎖可能なインターフェース
+- 関数型アプローチ: [解析するが検証しない](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)
+- プレーンな JavaScript でも動作します。TypeScript を使用する必要はありません。
 
-## Sponsors
+## スポンサー
 
-Sponsorship at any level is appreciated and encouraged. For individual developers, consider the [Cup of Coffee tier](https://github.com/sponsors/colinhacks). If you built a paid product using Zod, consider one of the [podium tiers](https://github.com/sponsors/colinhacks).
+あらゆるレベルのスポンサーシップは歓迎され、奨励されています。個人開発者の場合は、[Cup of Coffee](https://github.com/sponsors/colinhacks) を検討してください。Zod を使用して有料製品を構築した場合は、[podium](https://github.com/sponsors/colinhacks) のいずれかを検討してください。
 
 <h3 align="center">プラチナ</h3>
 
@@ -1889,7 +1889,7 @@ myFunction.returnType();
 
 > Zod は、`.preprocess()` を必要とせずにプリミティブな強制機能をサポートするようになりました。詳細については、[強制のドキュメント](#coercion-for-primitives)を参照してください。
 
-通常、Zod は「解析してから変換する」原則で動作します。Zod は最初に入力を検証し、それを一連の変換関数に渡します。（変換の詳細については、[.transform ドキュメント](#transform) を参照してください）
+通常、Zod は「解析してから変換する」原則で動作します。Zod は最初に入力を検証し、それを一連の transform 関数に渡します。（変換の詳細については、[.transform ドキュメント](#transform) を参照してください）
 
 しかし、解析が行われる前に入力に何らかの変換を適用したい場合もあります。よくある使用例として、型の強制があります。Zod は、`z.preprocess()` を使用してこれを可能にします。
 
@@ -2155,7 +2155,7 @@ const Strings = z.array(z.string()).superRefine((val, ctx) => {
 
 #### 早期の中断
 
-デフォルトでは、リファインメントチェックが失敗した後でも解析は続行されます。たとえば、複数のリファインメントを連鎖させると、それらはすべて実行されます。ただし、後続のリファインメントが実行されないように、早期に中断することが望ましい場合があります。これを実現するには、`ctx.addIssue` に `fatal` フラグを渡し、`z.NEVER` を返します。
+デフォルトでは、リファインメントのチェックが失敗した後でも解析は続行されます。たとえば、複数のリファインメントを連鎖させると、それらはすべて実行されます。ただし、後続のリファインメントが実行されないように、早期に中断することが望ましい場合があります。これを実現するには、`ctx.addIssue` に `fatal` フラグを渡し、`z.NEVER` を返します。
 
 ```ts
 const schema = z.number().superRefine((val, ctx) => {
@@ -2178,9 +2178,9 @@ const schema = z.number().superRefine((val, ctx) => {
 });
 ```
 
-#### 型のリファインメント
+#### 型リファインメント
 
-If you provide a [type predicate](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) to `.refine()` or `.superRefine()`, the resulting type will be narrowed down to your predicate's type. This is useful if you are mixing multiple chained refinements and transformations:
+`.refine()` または `.superRefine()` に [型述語](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) を提供すると、結果の型は述語の型に絞り込まれます。これは、複数のチェーンされたリファインメントや変換を混在させる場合に役立ちます。
 
 ```ts
 const schema = z
@@ -2203,11 +2203,11 @@ const schema = z
   .refine((arg) => arg.first === "bob", "`first` is not `bob`!");
 ```
 
-> ⚠️ You **must** use `ctx.addIssue()` instead of returning a boolean value to indicate whether the validation passes. If `ctx.addIssue` is _not_ called during the execution of the function, validation passes.
+> ⚠️ 検証が通るかどうかを示すためにブール値を返すのではなく、`ctx.addIssue()` を **使用する必要があります。** 関数の実行中に `ctx.addIssue` が _呼び出されない_ 場合、検証は合格します。
 
 ### `.transform`
 
-To transform data after parsing, use the `transform` method.
+解析後にデータを変換するには、`transform` メソッドを使用します。
 
 ```ts
 const stringToNumber = z.string().transform((val) => val.length);
@@ -2215,9 +2215,9 @@ const stringToNumber = z.string().transform((val) => val.length);
 stringToNumber.parse("string"); // => 6
 ```
 
-#### Chaining order
+#### 連鎖順序
 
-Note that `stringToNumber` above is an instance of the `ZodEffects` subclass. It is NOT an instance of `ZodString`. If you want to use the built-in methods of `ZodString` (e.g. `.email()`) you must apply those methods _before_ any transforms.
+上記の `stringToNumber` は `ZodEffects` サブクラスのインスタンスであることに注意してください。これは `ZodString` のインスタンスではありません。`ZodString` の組み込みメソッド（例：`.email()`）を使用する場合は、変換の前にそれらのメソッドを適用する必要があります。
 
 ```ts
 const emailToDomain = z
@@ -2228,11 +2228,11 @@ const emailToDomain = z
 emailToDomain.parse("colinhacks@example.com"); // => example.com
 ```
 
-#### Validating during transform
+#### 変換中の検証
 
-The `.transform` method can simultaneously validate and transform the value. This is often simpler and less duplicative than chaining `transform` and `refine`.
+`.transform` メソッドは、値の検証と変換を同時に行うことができます。これは、`transform` と `refine` を連鎖させるよりもシンプルで重複が少ないことが多いです。
 
-As with `.superRefine`, the transform function receives a `ctx` object with an `addIssue` method that can be used to register validation issues.
+`.superRefine` と同様に、transform 関数はバリデーションのイシューを登録するために使用できる `addIssue` メソッドを持つ `ctx` オブジェクトを受け取ります。
 
 ```ts
 const numberInString = z.string().transform((val, ctx) => {
@@ -2243,19 +2243,19 @@ const numberInString = z.string().transform((val, ctx) => {
       message: "Not a number",
     });
 
-    // This is a special symbol you can use to
-    // return early from the transform function.
-    // It has type `never` so it does not affect the
-    // inferred return type.
+    // これは特別なシンボルで、
+    // transform 関数から早期に返されます。
+    // `never`型なので
+    // 推論される戻り値の型には影響しません。
     return z.NEVER;
   }
   return parsed;
 });
 ```
 
-#### Relationship to refinements
+#### リファインメントとの関係
 
-Transforms and refinements can be interleaved. These will be executed in the order they are declared.
+変換とリファインメントは相互に繰り返すことができます。これらは宣言された順に実行されます。
 
 ```ts
 const nameToGreeting = z
@@ -2266,9 +2266,9 @@ const nameToGreeting = z
   .refine((val) => val.indexOf("!") === -1);
 ```
 
-#### Async transforms
+#### 非同期変換
 
-Transforms can also be async.
+変換は非同期にすることもできます。
 
 ```ts
 const IdToUser = z
@@ -2279,11 +2279,11 @@ const IdToUser = z
   });
 ```
 
-> ⚠️ If your schema contains asynchronous transforms, you must use .parseAsync() or .safeParseAsync() to parse data. Otherwise Zod will throw an error.
+> ⚠️ スキーマに非同期変換が含まれている場合は、.parseAsync() または .safeParseAsync() を使用してデータを解析する必要があります。そうしないと、Zod はエラーをスローします。
 
 ### `.default`
 
-You can use transforms to implement the concept of "default values" in Zod.
+トランスフォームを活用して、Zod で「デフォルト値」の概念を実装できます。
 
 ```ts
 const stringWithDefault = z.string().default("tuna");
@@ -2291,7 +2291,7 @@ const stringWithDefault = z.string().default("tuna");
 stringWithDefault.parse(undefined); // => "tuna"
 ```
 
-Optionally, you can pass a function into `.default` that will be re-executed whenever a default value needs to be generated:
+オプションで、デフォルト値を生成する必要があるときに再実行される関数を `.default` に渡すことができます。
 
 ```ts
 const numberWithRandomDefault = z.number().default(Math.random);
@@ -2301,14 +2301,14 @@ numberWithRandomDefault.parse(undefined); // => 0.1871840107401901
 numberWithRandomDefault.parse(undefined); // => 0.7223408162401552
 ```
 
-Conceptually, this is how Zod processes default values:
+概念的には、Zod は次のようにデフォルト値を処理します。
 
-1. If the input is `undefined`, the default value is returned
-2. Otherwise, the data is parsed using the base schema
+1. 入力が `undefined` の場合、デフォルト値が返されます
+2. それ以外の場合、データは基本スキーマを使用して解析されます
 
 ### `.describe`
 
-Use `.describe()` to add a `description` property to the resulting schema.
+`.describe()` を使用して、結果のスキーマに `description` プロパティを追加します。
 
 ```ts
 const documentedString = z
@@ -2317,11 +2317,11 @@ const documentedString = z
 documentedString.description; // A useful bit of text…
 ```
 
-This can be useful for documenting a field, for example in a JSON Schema using a library like [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema)).
+これは、[`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema) のようなライブラリを使用して、JSON スキーマでフィールドを文書化する場合に便利です。
 
 ### `.catch`
 
-Use `.catch()` to provide a "catch value" to be returned in the event of a parsing error.
+`catch()` を使用して、解析エラーが発生した際に返される「キャッチ値」を指定します。
 
 ```ts
 const numberWithCatch = z.number().catch(42);
@@ -2330,7 +2330,7 @@ numberWithCatch.parse(5); // => 5
 numberWithCatch.parse("tuna"); // => 42
 ```
 
-Optionally, you can pass a function into `.catch` that will be re-executed whenever a default value needs to be generated. A `ctx` object containing the caught error will be passed into this function.
+オプションとして、デフォルト値を生成する必要があるときに再実行される関数を `.catch` に渡すことができます。キャッチしたエラーを含む `ctx` オブジェクトがこの関数に渡されます。
 
 ```ts
 const numberWithRandomCatch = z.number().catch((ctx) => {
@@ -2343,14 +2343,14 @@ numberWithRandomCatch.parse("sup"); // => 0.1871840107401901
 numberWithRandomCatch.parse("sup"); // => 0.7223408162401552
 ```
 
-Conceptually, this is how Zod processes "catch values":
+概念的には、Zod は次のように「キャッチ値」を処理します。
 
-1. The data is parsed using the base schema
-2. If the parsing fails, the "catch value" is returned
+1. データは基本スキーマを使用して解析されます
+2. 解析に失敗した際は、「キャッチ値」が返されます
 
 ### `.optional`
 
-A convenience method that returns an optional version of a schema.
+`.optional` は、スキーマの任意入力許容の値を返す便利なメソッドです。
 
 ```ts
 const optionalString = z.string().optional(); // string | undefined
@@ -2361,7 +2361,7 @@ z.optional(z.string());
 
 ### `.nullable`
 
-A convenience method that returns a nullable version of a schema.
+`null` を許容するスキーマを返す便利なメソッド。
 
 ```ts
 const nullableString = z.string().nullable(); // string | null
@@ -2372,7 +2372,7 @@ z.nullable(z.string());
 
 ### `.nullish`
 
-A convenience method that returns a "nullish" version of a schema. Nullish schemas will accept both `undefined` and `null`. Read more about the concept of "nullish" [in the TypeScript 3.7 release notes](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#nullish-coalescing).
+「nullish」のスキーマを返す便利なメソッドです。nullish スキーマは、`undefined` と `null` の両方を受け入れます。「nullish」の概念の詳細については、[TypeScript 3.7 リリースノート](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#nullish-coalescing) を参照してください。
 
 ```ts
 const nullishString = z.string().nullish(); // string | null | undefined
@@ -2383,7 +2383,7 @@ z.string().nullable().optional();
 
 ### `.array`
 
-A convenience method that returns an array schema for the given type:
+指定されている型の配列スキーマを返す便利なメソッドです。
 
 ```ts
 const stringArray = z.string().array(); // string[]
@@ -2394,7 +2394,7 @@ z.array(z.string());
 
 ### `.promise`
 
-A convenience method for promise types:
+プロミス型のための便利なメソッドです。
 
 ```ts
 const stringPromise = z.string().promise(); // Promise<string>
@@ -2405,7 +2405,7 @@ z.promise(z.string());
 
 ### `.or`
 
-A convenience method for [union types](#unions).
+[ユニオン型](#unions) の便利なメソッドです。
 
 ```ts
 const stringOrNumber = z.string().or(z.number()); // string | number
@@ -2416,7 +2416,7 @@ z.union([z.string(), z.number()]);
 
 ### `.and`
 
-A convenience method for creating intersection types.
+インターセクション型を作成するための便利なメソッド。
 
 ```ts
 const nameAndAge = z
@@ -2431,7 +2431,7 @@ z.intersection(z.object({ name: z.string() }), z.object({ age: z.number() }));
 
 `.brand<T>() => ZodBranded<this, B>`
 
-TypeScript's type system is structural, which means that any two types that are structurally equivalent are considered the same.
+TypeScript の型システムは構造的であるため、構造的に同等な２つの型は同じものとみなされます。
 
 ```ts
 type Cat = { name: string };
@@ -2442,7 +2442,7 @@ const fido: Dog = { name: "fido" };
 petCat(fido); // works fine
 ```
 
-In some cases, its can be desirable to simulate _nominal typing_ inside TypeScript. For instance, you may wish to write a function that only accepts an input that has been validated by Zod. This can be achieved with _branded types_ (AKA _opaque types_).
+場合によっては、TypeScript の内部で _nomimal typing_ （公称型）をシミュレートすることが望ましいことがあります。たとえば、Zod によってバリデーションされた入力のみを受け付ける関数を記述したい場合があります。これは、_branded types_ （ブランド型）で実現できます。
 
 ```ts
 const Cat = z.object({ name: z.string() }).brand<"Cat">();
@@ -2458,7 +2458,7 @@ petCat(simba);
 petCat({ name: "fido" });
 ```
 
-Under the hood, this works by attaching a "brand" to the inferred type using an intersection type. This way, plain/unbranded data structures are no longer assignable to the inferred type of the schema.
+内部的には、これはインターセクション型を使用して推論された型に「ブランド」を付けることによって機能します。このようにして、プレーン/ブランド化されていないデータ構造は、スキーマの推論された型に代入することができなくなります。
 
 ```ts
 const Cat = z.object({ name: z.string() }).brand<"Cat">();
@@ -2466,13 +2466,13 @@ type Cat = z.infer<typeof Cat>;
 // {name: string} & {[symbol]: "Cat"}
 ```
 
-Note that branded types do not affect the runtime result of `.parse`. It is a static-only construct.
+ブランド型は `.parse` の実行結果に影響を与えないことに注意してください。これは静的のみの構文です。
 
 ### `.readonly`
 
 `.readonly() => ZodReadonly<this>`
 
-This method returns a `ZodReadonly` schema instance that parses the input using the base schema, then calls `Object.freeze()` on the result. The inferred type is also marked as `readonly`.
+このメソッドは、基本スキーマを使用して入力を解析し、その結果に `Object.freeze()` を呼び出す `ZodReadonly` スキーマインスタンスを返します。推論された型も `readonly` としてマークされます。
 
 ```ts
 const schema = z.object({ name: z.string() }).readonly();
@@ -2483,7 +2483,7 @@ const result = schema.parse({ name: "fido" });
 result.name = "simba"; // error
 ```
 
-The inferred type uses TypeScript's built-in readonly types when relevant.
+推論された型は、適切な場合には TypeScript 組み込みの readonly 型を使用します。
 
 ```ts
 z.array(z.string()).readonly();
@@ -2501,7 +2501,7 @@ z.set(z.string()).readonly();
 
 ### `.pipe`
 
-Schemas can be chained into validation "pipelines". It's useful for easily validating the result after a `.transform()`:
+スキーマは「パイプライン」としてバリデーションにチェーンさせることができます。`.transform()` の後の結果を簡単に検証するのに役立ちます。
 
 ```ts
 z.string()
@@ -2509,13 +2509,13 @@ z.string()
   .pipe(z.number().min(5));
 ```
 
-The `.pipe()` method returns a `ZodPipeline` instance.
+`.pipe()` メソッドは `ZodPipeline` インスタンスを返します。
 
-#### You can use `.pipe()` to fix common issues with `z.coerce`.
+#### `.pipe()` で `z.coerce` の問題を解決
 
-You can constrain the input to types that work well with your chosen coercion. Then use `.pipe()` to apply the coercion.
+選択した型変換に適したタイプに入力を制約できます。その後、`.pipe()` を使用して型変換を適用します。
 
-without constrained input:
+制約のない入力の場合：
 
 ```ts
 const toDate = z.coerce.date();
@@ -2527,7 +2527,7 @@ console.log(toDate.safeParse("2023-01-01").success); // true
 console.log(toDate.safeParse(null).success); // true
 ```
 
-with constrained input:
+制約付き入力の場合：
 
 ```ts
 const datelike = z.union([z.number(), z.string(), z.date()]);
@@ -2540,9 +2540,9 @@ console.log(datelikeToDate.safeParse("2023-01-01").success); // true
 console.log(datelikeToDate.safeParse(null).success); // false
 ```
 
-You can also use this technique to avoid coercions that throw uncaught errors.
+このテクニックを使用して、キャッチされないエラーをスローする挙動を回避することもできます。
 
-without constrained input:
+制約のない入力の場合：
 
 ```ts
 const toBigInt = z.coerce.bigint();
@@ -2554,7 +2554,7 @@ console.log(toBigInt.safeParse("42")); // true
 console.log(toBigInt.safeParse(null)); // throws uncaught error
 ```
 
-with constrained input:
+制約付き入力の場合：
 
 ```ts
 const toNumber = z.number().or(z.string()).pipe(z.coerce.number());
@@ -2567,11 +2567,11 @@ console.log(toBigInt.safeParse("42").success); // true
 console.log(toBigInt.safeParse(null).success); // false
 ```
 
-## Guides and concepts
+## ガイドとコンセプト
 
-### Type inference
+### 型推論
 
-You can extract the TypeScript type of any schema with `z.infer<typeof mySchema>` .
+`z.infer<typeof mySchema>` を使用して、任意のスキーマの TypeScript 型を抽出できます。
 
 ```ts
 const A = z.string();
@@ -2581,11 +2581,11 @@ const u: A = 12; // TypeError
 const u: A = "asdf"; // compiles
 ```
 
-**What about transforms?**
+**変換については？**
 
-In reality each Zod schema internally tracks **two** types: an input and an output. For most schemas (e.g. `z.string()`) these two are the same. But once you add transforms into the mix, these two values can diverge. For instance `z.string().transform(val => val.length)` has an input of `string` and an output of `number`.
+実際には、各 Zod スキーマは内部的に **２つの** 型（入力と出力）を追跡します。ほとんどのスキーマ（たとえば、`z.string()`）では、これら２つは同じです。ただし、変換を追加すると、これら２つの値が異なる可能性があります。たとえば、`z.string().transform(val => val.length)` には、`string` の入力と `number` の出力があります。
 
-You can separately extract the input and output types like so:
+次のように入力型と出力型を個別に抽出できます。
 
 ```ts
 const stringToNumber = z.string().transform((val) => val.length);
@@ -2598,11 +2598,11 @@ type output = z.output<typeof stringToNumber>; // number
 type inferred = z.infer<typeof stringToNumber>; // number
 ```
 
-### Writing generic functions
+### ジェネリック関数の記述
 
-With TypeScript generics, you can write reusable functions that accept Zod schemas as parameters. This enables you to create custom validation logic, schema transformations, and more, while maintaining type safety and inference.
+TypeScript ジェネリックを使用すると、Zod スキーマをパラメータとして受け取る再利用可能な関数を作成できます。これにより、型の安全性と推論を維持しながら、カスタム検証ロジック、スキーマ変換などを作成できます。
 
-When attempting to write a function that accepts a Zod schema as an input, it's tempting to try something like this:
+Zod スキーマを入力として受け取る関数を書こうとするとき、以下のようなアプローチを取ることがあります。
 
 ```ts
 function inferSchema<T>(schema: z.ZodType<T>) {
@@ -2610,16 +2610,16 @@ function inferSchema<T>(schema: z.ZodType<T>) {
 }
 ```
 
-This approach is incorrect, and limits TypeScript's ability to properly infer the argument. No matter what you pass in, the type of `schema` will be an instance of `ZodType`.
+このアプローチは正しくなく、TypeScript が引数を適切に推測する能力を制限してしまいます。何を渡しても、`schema` の型は `ZodType` のインスタンスになります。
 
 ```ts
 inferSchema(z.string());
 // => ZodType<string>
 ```
 
-This approach loses type information, namely _which subclass_ the input actually is (in this case, `ZodString`). That means you can't call any string-specific methods like `.min()` on the result of `inferSchema`.
+このアプローチでは、入力が実際にどのサブクラスであるか（この場合は `ZodString`）という型情報が失われてしまいます。つまり、`inferSchema` の結果に対して `.min()` などの文字列固有のメソッドを呼び出すことはできません。
 
-A better approach is to infer _the schema as a whole_ instead of merely its inferred type. You can do this with a utility type called `z.ZodTypeAny`.
+より良いアプローチは、推論された型だけではなく、_スキーマ全体_ を推論することです。これは、`z.ZodTypeAny` というユーティリティ型を使用して実行できます。
 
 ```ts
 function inferSchema<T extends z.ZodTypeAny>(schema: T) {
@@ -2630,13 +2630,13 @@ inferSchema(z.string());
 // => ZodString
 ```
 
-> `ZodTypeAny` is just a shorthand for `ZodType<any, any, any>`, a type that is broad enough to match any Zod schema.
+> `ZodTypeAny` は `ZodType<any, any, any>` の省略形であり、あらゆる Zod スキーマに一致するほど広範囲な型です。
 
-The Result is now fully and properly typed, and the type system can infer the specific subclass of the schema.
+Result は完全に適切に型付けされ、型システムはスキーマの特定のサブクラスを推論できるようになりました。
 
-#### Inferring the inferred type
+#### 推論された型の推論
 
-If you follow the best practice of using `z.ZodTypeAny` as the generic parameter for your schema, you may encounter issues with the parsed data being typed as `any` instead of the inferred type of the schema.
+`z.ZodTypeAny` をスキーマの汎用パラメータとして使用するベストプラクティスに従うと、パースされたデータがスキーマの推論された型ではなく、`any` として型付けされるという問題に出会うかもしれません。
 
 ```ts
 function parseData<T extends z.ZodTypeAny>(data: unknown, schema: T) {
@@ -2647,7 +2647,7 @@ parseData("sup", z.string());
 // => any
 ```
 
-Due to how TypeScript inference works, it is treating `schema` like a `ZodTypeAny` instead of the inferred type. You can fix this with a type cast using `z.infer`.
+TypeScript 推論の仕組みにより、`schema` は推論された型ではなく `ZodTypeAny` のように扱われます。`z.infer` を使用して型キャストすることでこれを修正できます。
 
 ```ts
 function parseData<T extends z.ZodTypeAny>(data: unknown, schema: T) {
@@ -2659,9 +2659,9 @@ parseData("sup", z.string());
 // => string
 ```
 
-#### Constraining allowable inputs
+#### 許容入力の制限
 
-The `ZodType` class has three generic parameters.
+`ZodType` クラスには３つの汎用パラメータがあります。
 
 ```ts
 class ZodType<
@@ -2671,7 +2671,7 @@ class ZodType<
 > { ... }
 ```
 
-By constraining these in your generic input, you can limit what schemas are allowable as inputs to your function:
+ジェネリック入力でこれらを制限することで、関数への入力として許可されるスキーマを制限できます。
 
 ```ts
 function makeSchemaOptional<T extends z.ZodType<string>>(schema: T) {
@@ -2687,7 +2687,7 @@ makeSchemaOptional(z.number());
 
 ### エラー処理
 
-Zod provides a subclass of Error called `ZodError`. ZodErrors contain an `issues` array containing detailed information about the validation problems.
+Zod は、`ZodError` と呼ばれる Error のサブクラスを提供します。ZodErrors には、検証の問題に関する詳細な情報を含む `issues` 配列が含まれています。
 
 ```ts
 const result = z
@@ -2710,13 +2710,13 @@ if (!result.success) {
 }
 ```
 
-> For detailed information about the possible error codes and how to customize error messages, check out the dedicated error handling guide: [ERROR_HANDLING.md](ERROR_HANDLING.md)
+> 考えられるエラーコードとエラーメッセージのカスタマイズ方法の詳細については、専用のエラー処理ガイドをご覧ください。[ERROR_HANDLING.md](ERROR_HANDLING.md)
 
-Zod's error reporting emphasizes _completeness_ and _correctness_. If you are looking to present a useful error message to the end user, you should either override Zod's error messages using an error map (described in detail in the Error Handling guide) or use a third-party library like [`zod-validation-error`](https://github.com/causaly/zod-validation-error)
+Zod のエラー報告では、_完全性_ と _正確性_ を重視しています。エンドユーザーに有用なエラーメッセージを提示したい場合は、エラーマップ（エラー処理ガイドで詳しく説明）を使用して Zod のエラーメッセージを上書きするか、[`zod-validation-error`](https://github.com/causaly/zod-validation-error) などのサードパーティライブラリを使用する必要があります。
 
-### Error formatting
+### エラーのフォーマット
 
-You can use the `.format()` method to convert this error into a nested object.
+`.format()` メソッドを使用して、以下のエラーをネストされたオブジェクトに変換することができます。
 
 ```ts
 const result = z
@@ -2736,9 +2736,9 @@ if (!result.success) {
 }
 ```
 
-## Comparison
+## 比較
 
-There are a handful of other widely-used validation libraries, but all of them have certain design limitations that make for a non-ideal developer experience.
+広く使用されているバリデーションライブラリは他にもいくつかありますが、それらはすべて、理想的な開発者エクスペリエンスとは言えない設計上の制限があります。
 
 <!-- The table below summarizes the feature differences. Below the table there are more involved discussions of certain alternatives, where necessary. -->
 
@@ -2792,20 +2792,20 @@ Branded -->
 
 [https://github.com/hapijs/joi](https://github.com/hapijs/joi)
 
-Doesn't support static type inference 😕
+静的型推論をサポートしていません 😕
 
 ### Yup
 
 [https://github.com/jquense/yup](https://github.com/jquense/yup)
 
-Yup is a full-featured library that was implemented first in vanilla JS, and later rewritten in TypeScript.
+Yup は、最初は vanilla JS で実装され、後に TypeScript で書き直されたフル機能のライブラリです。
 
-- Supports casting and transforms
-- All object fields are optional by default
-<!-- - Missing nonempty arrays with proper typing (`[T, ...T[]]`) -->
-- Missing promise schemas
-- Missing function schemas
-- Missing union & intersection schemas
+- キャストとトランスフォームをサポート
+- すべてのオブジェクトフィールドはデフォルトでオプションです
+<!-- - 適切な型付けの空でない配列がありません (`[T, ...T[]]`) -->
+- プロミススキーマが欠落している
+- 関数スキーマが欠落している
+- 論理和と論理積のスキーマが欠落している
 
 <!-- ¹Yup has a strange interpretation of the word `required`. Instead of meaning "not undefined", Yup uses it to mean "not empty". So `yup.string().required()` will not accept an empty string, and `yup.array(yup.string()).required()` will not accept an empty array. Instead, Yup us Zod arrays there is a dedicated `.nonempty()` method to indicate this, or you can implement it with a custom refinement. -->
 
@@ -2813,9 +2813,9 @@ Yup is a full-featured library that was implemented first in vanilla JS, and lat
 
 [https://github.com/gcanti/io-ts](https://github.com/gcanti/io-ts)
 
-io-ts is an excellent library by gcanti. The API of io-ts heavily inspired the design of Zod.
+io-ts は gcanti による優れたライブラリです。io-ts の API は Zod の設計に多大な影響を与えました。
 
-In our experience, io-ts prioritizes functional programming purity over developer experience in many cases. This is a valid and admirable design goal, but it makes io-ts particularly hard to integrate into an existing codebase with a more procedural or object-oriented bias. For instance, consider how to define an object with optional properties in io-ts:
+私たちの経験では、io-ts は多くの場合、開発者の経験よりも関数型プログラミングの純粋さを優先します。これは有効で立派な設計目標ですが、io-ts を、より手続き型またはオブジェクト指向のバイアスを持つ既存のコードベースに統合することが特に難しくなります。たとえば、io-ts でオプションのプロパティを持つオブジェクトを定義する方法を考えてみましょう。
 
 ```ts
 import * as t from "io-ts";
@@ -2834,9 +2834,9 @@ type C = t.TypeOf<typeof C>;
 // returns { foo: string; bar?: number | undefined }
 ```
 
-You must define the required and optional props in separate object validators, pass the optionals through `t.partial` (which marks all properties as optional), then combine them with `t.intersection` .
+必須プロパティとオプションプロパティを別々のオブジェクト バリデーターで定義し、オプションプロパティを `t.partial`（すべてのプロパティをオプションとしてマークする）に渡してから、それらを `t.intersection` と組み合わせる必要があります。
 
-Consider the equivalent in Zod:
+Zod での同等の例を考えてみましょう。
 
 ```ts
 const C = z.object({
@@ -2848,37 +2848,37 @@ type C = z.infer<typeof C>;
 // returns { foo: string; bar?: number | undefined }
 ```
 
-This more declarative API makes schema definitions vastly more concise.
+このより宣言的な API により、スキーマ定義が大幅に簡潔になります。
 
-`io-ts` also requires the use of gcanti's functional programming library `fp-ts` to parse results and handle errors. This is another fantastic resource for developers looking to keep their codebase strictly functional. But depending on `fp-ts` necessarily comes with a lot of intellectual overhead; a developer has to be familiar with functional programming concepts and the `fp-ts` nomenclature to use the library.
+`io-ts` では、結果を解析してエラーを処理するために、gcanti の関数型プログラミング ライブラリ `fp-ts` も必要です。これは、コードベースを厳密に機能的なものにしたい開発者にとって、もう 1 つの素晴らしいリソースです。ただし、`fp-ts` に依存すると、必然的に多くの知的オーバーヘッドが発生します。開発者は、ライブラリを使用するために、関数型プログラミングの概念と `fp-ts` の命名法に精通している必要があります。
 
-- Supports codecs with serialization & deserialization transforms
-- Supports branded types
-- Supports advanced functional programming, higher-kinded types, `fp-ts` compatibility
-- Missing object methods: (pick, omit, partial, deepPartial, merge, extend)
-- Missing nonempty arrays with proper typing (`[T, ...T[]]`)
-- Missing promise schemas
-- Missing function schemas
+- シリアル化とデシリアル化の変換を備えたコーデックをサポート
+- ブランドタイプをサポート
+- 高度な関数型プログラミング、高階型、`fp-ts` 互換性をサポート
+- 不足しているオブジェクト メソッド: (pick、omit、partial、deepPartial、merge、extend)
+- 適切な型付けの空でない配列が見つかりません (`[T, ...T[]]`)
+- プロミススキーマが欠落している
+- 関数スキーマが欠落している
 
 ### Runtypes
 
 [https://github.com/pelotom/runtypes](https://github.com/pelotom/runtypes)
 
-Good type inference support.
+優れた型推論サポート。
 
-- Supports "pattern matching": computed properties that distribute over unions
-- Missing object methods: (deepPartial, merge)
-- Missing nonempty arrays with proper typing (`[T, ...T[]]`)
-- Missing promise schemas
-- Missing error customization
+- 「パターンマッチング」をサポート：ユニオンに分配される計算プロパティ
+- 不足しているオブジェクトメソッド： (deepPartial、merge)
+- 適切な型付けの空でない配列が見つかりません（`[T, ...T[]]`）
+- プロミススキーマが欠落している
+- エラーのカスタマイズが不足しています
 
 ### Ow
 
 [https://github.com/sindresorhus/ow](https://github.com/sindresorhus/ow)
 
-Ow is focused on function input validation. It's a library that makes it easy to express complicated assert statements, but it doesn't let you parse untyped data. They support a much wider variety of types; Zod has a nearly one-to-one mapping with TypeScript's type system, whereas ow lets you validate several highly-specific types out of the box (e.g. `int32Array` , see full list in their README).
+Ow は関数の入力検証に特化しています。これは複雑なアサートステートメントを簡単に表現できるライブラリですが、型指定されていないデータを解析することはできません。サポートされる型ははるかに多岐にわたります。Zod は TypeScript の型システムとほぼ１対１でマッピングしますが、ow ではすぐに使用できる非常に特殊な複数の型を検証できます）例：`int32Array`、README の完全なリストを参照）。
 
-If you want to validate function inputs, use function schemas in Zod! It's a much simpler approach that lets you reuse a function type declaration without repeating yourself (namely, copy-pasting a bunch of ow assertions at the beginning of every function). Also Zod lets you validate your return types as well, so you can be sure there won't be any unexpected data passed downstream.
+関数の入力を検証したい場合は、Zod の関数スキーマを使用してください。これは、関数の型宣言を繰り返すことなく再利用できる、はるかにシンプルなアプローチです（すべての関数の先頭に多くの ow アサーションをコピーペーストすることです）。また、Zod では戻り値の型も検証できるため、下流に予期しないデータが渡されないことを確認できます。
 
 ## 更新履歴
 
